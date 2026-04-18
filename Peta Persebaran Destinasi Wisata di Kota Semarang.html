@@ -1,0 +1,2101 @@
+<!DOCTYPE html>
+<html>
+<head>
+    
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+    <script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.3/dist/leaflet.js"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Leaflet.awesome-markers/2.0.2/leaflet.awesome-markers.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.3/dist/leaflet.css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="https://netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap-glyphicons.css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.2.0/css/all.min.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Leaflet.awesome-markers/2.0.2/leaflet.awesome-markers.css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/python-visualization/folium/folium/templates/leaflet.awesome.rotate.min.css"/>
+    
+            <meta name="viewport" content="width=device-width,
+                initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+            <style>
+                #map_ab8edbc02a4f767329c5443ccffb9a45 {
+                    position: relative;
+                    width: 100.0%;
+                    height: 100.0%;
+                    left: 0.0%;
+                    top: 0.0%;
+                }
+                .leaflet-container { font-size: 1rem; }
+            </style>
+
+            <style>html, body {
+                width: 100%;
+                height: 100%;
+                margin: 0;
+                padding: 0;
+            }
+            </style>
+
+            <style>#map {
+                position:absolute;
+                top:0;
+                bottom:0;
+                right:0;
+                left:0;
+                }
+            </style>
+
+            <script>
+                L_NO_TOUCH = false;
+                L_DISABLE_3D = false;
+            </script>
+
+        
+</head>
+<body>
+    
+    
+            <div class="folium-map" id="map_ab8edbc02a4f767329c5443ccffb9a45" ></div>
+        
+</body>
+<script>
+    
+    
+            var map_ab8edbc02a4f767329c5443ccffb9a45 = L.map(
+                "map_ab8edbc02a4f767329c5443ccffb9a45",
+                {
+                    center: [-7.0, 110.39],
+                    crs: L.CRS.EPSG3857,
+                    ...{
+  "maxBounds": [
+[
+-7.15,
+110.25,
+],
+[
+-6.85,
+110.5,
+],
+],
+  "zoom": 12,
+  "zoomControl": true,
+  "preferCanvas": false,
+}
+
+                }
+            );
+
+            
+
+        
+    
+            var tile_layer_b67f31fcbcd72ad9a9ce628eaa3584fc = L.tileLayer(
+                "https://tile.openstreetmap.org/{z}/{x}/{y}.png",
+                {
+  "minZoom": 11,
+  "maxZoom": 19,
+  "maxNativeZoom": 19,
+  "noWrap": false,
+  "attribution": "\u0026copy; \u003ca href=\"https://www.openstreetmap.org/copyright\"\u003eOpenStreetMap\u003c/a\u003e contributors",
+  "subdomains": "abc",
+  "detectRetina": false,
+  "tms": false,
+  "opacity": 1,
+}
+
+            );
+        
+    
+            tile_layer_b67f31fcbcd72ad9a9ce628eaa3584fc.addTo(map_ab8edbc02a4f767329c5443ccffb9a45);
+        
+    
+            var marker_f62ae347161152f70fa9bc6fbe5d20d7 = L.marker(
+                [-6.968265, 110.428453],
+                {
+}
+            ).addTo(map_ab8edbc02a4f767329c5443ccffb9a45);
+        
+    
+            var icon_942e0e7ea5c9191214df521043c7ab95 = L.AwesomeMarkers.icon(
+                {
+  "markerColor": "red",
+  "iconColor": "white",
+  "icon": "star",
+  "prefix": "glyphicon",
+  "extraClasses": "fa-rotate-0",
+}
+            );
+        
+    
+        var popup_632a56a35ce9982ca429fac522bbab55 = L.popup({
+  "maxWidth": "100%",
+});
+
+        
+            
+                var html_0dfc6ca0f7c81caf0248e30d47de0dbb = $(`<div id="html_0dfc6ca0f7c81caf0248e30d47de0dbb" style="width: 100.0%; height: 100.0%;"><b>Kota Lama</b></div>`)[0];
+                popup_632a56a35ce9982ca429fac522bbab55.setContent(html_0dfc6ca0f7c81caf0248e30d47de0dbb);
+            
+        
+
+        marker_f62ae347161152f70fa9bc6fbe5d20d7.bindPopup(popup_632a56a35ce9982ca429fac522bbab55)
+        ;
+
+        
+    
+    
+            marker_f62ae347161152f70fa9bc6fbe5d20d7.bindTooltip(
+                `<div>
+                     Vertex: Kota Lama
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+                marker_f62ae347161152f70fa9bc6fbe5d20d7.setIcon(icon_942e0e7ea5c9191214df521043c7ab95);
+            
+    
+            var marker_ff22c4416ee40527737af15ec0e853cb = L.marker(
+                [-6.968265, 110.428453],
+                {
+}
+            ).addTo(map_ab8edbc02a4f767329c5443ccffb9a45);
+        
+    
+            var div_icon_0f5ae3e2945374133d5db7af44436391 = L.divIcon({
+  "html": "\n            \u003cdiv style=\"\n                font-family: Arial, sans-serif;\n                font-size: 8pt; \n                font-weight: bold;\n                color: #000000;\n                background-color: rgba(255, 255, 255, 0.85);\n                border: 1px solid black;\n                border-radius: 3px;\n                padding: 2px 4px;\n                white-space: nowrap;\n                transform: translate(12px, -12px);\n            \"\u003e\n                Kota Lama\n            \u003c/div\u003e\n            ",
+  "className": "empty",
+});
+        
+    
+                marker_ff22c4416ee40527737af15ec0e853cb.setIcon(div_icon_0f5ae3e2945374133d5db7af44436391);
+            
+    
+            var marker_be903811ba5245a9e89a993febfaab99 = L.marker(
+                [-6.983984, 110.410438],
+                {
+}
+            ).addTo(map_ab8edbc02a4f767329c5443ccffb9a45);
+        
+    
+            var icon_634b5422e1185e53d7c4d373943c53b6 = L.AwesomeMarkers.icon(
+                {
+  "markerColor": "red",
+  "iconColor": "white",
+  "icon": "star",
+  "prefix": "glyphicon",
+  "extraClasses": "fa-rotate-0",
+}
+            );
+        
+    
+        var popup_d8eca18f9322187ed9749cb20ae981e4 = L.popup({
+  "maxWidth": "100%",
+});
+
+        
+            
+                var html_f3cd3a7e407ef58da6caff48e83cb7e9 = $(`<div id="html_f3cd3a7e407ef58da6caff48e83cb7e9" style="width: 100.0%; height: 100.0%;"><b>Lawang Sewu</b></div>`)[0];
+                popup_d8eca18f9322187ed9749cb20ae981e4.setContent(html_f3cd3a7e407ef58da6caff48e83cb7e9);
+            
+        
+
+        marker_be903811ba5245a9e89a993febfaab99.bindPopup(popup_d8eca18f9322187ed9749cb20ae981e4)
+        ;
+
+        
+    
+    
+            marker_be903811ba5245a9e89a993febfaab99.bindTooltip(
+                `<div>
+                     Vertex: Lawang Sewu
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+                marker_be903811ba5245a9e89a993febfaab99.setIcon(icon_634b5422e1185e53d7c4d373943c53b6);
+            
+    
+            var marker_3cd22b2a340fdb584fe2f992cc7a42ed = L.marker(
+                [-6.983984, 110.410438],
+                {
+}
+            ).addTo(map_ab8edbc02a4f767329c5443ccffb9a45);
+        
+    
+            var div_icon_a35a02e99a6c939d48cd4814a23a9da9 = L.divIcon({
+  "html": "\n            \u003cdiv style=\"\n                font-family: Arial, sans-serif;\n                font-size: 8pt; \n                font-weight: bold;\n                color: #000000;\n                background-color: rgba(255, 255, 255, 0.85);\n                border: 1px solid black;\n                border-radius: 3px;\n                padding: 2px 4px;\n                white-space: nowrap;\n                transform: translate(12px, -12px);\n            \"\u003e\n                Lawang Sewu\n            \u003c/div\u003e\n            ",
+  "className": "empty",
+});
+        
+    
+                marker_3cd22b2a340fdb584fe2f992cc7a42ed.setIcon(div_icon_a35a02e99a6c939d48cd4814a23a9da9);
+            
+    
+            var marker_e8561876ec992c069dd72692599e0154 = L.marker(
+                [-6.996316, 110.398032],
+                {
+}
+            ).addTo(map_ab8edbc02a4f767329c5443ccffb9a45);
+        
+    
+            var icon_e8f3bcf99273c839a865a33b78d95bcd = L.AwesomeMarkers.icon(
+                {
+  "markerColor": "red",
+  "iconColor": "white",
+  "icon": "star",
+  "prefix": "glyphicon",
+  "extraClasses": "fa-rotate-0",
+}
+            );
+        
+    
+        var popup_f751bc1f39ff715340d9c18a9d0b826f = L.popup({
+  "maxWidth": "100%",
+});
+
+        
+            
+                var html_b39444070b4d6cc1141b5c9b0222ba55 = $(`<div id="html_b39444070b4d6cc1141b5c9b0222ba55" style="width: 100.0%; height: 100.0%;"><b>Sam Poo Kong</b></div>`)[0];
+                popup_f751bc1f39ff715340d9c18a9d0b826f.setContent(html_b39444070b4d6cc1141b5c9b0222ba55);
+            
+        
+
+        marker_e8561876ec992c069dd72692599e0154.bindPopup(popup_f751bc1f39ff715340d9c18a9d0b826f)
+        ;
+
+        
+    
+    
+            marker_e8561876ec992c069dd72692599e0154.bindTooltip(
+                `<div>
+                     Vertex: Sam Poo Kong
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+                marker_e8561876ec992c069dd72692599e0154.setIcon(icon_e8f3bcf99273c839a865a33b78d95bcd);
+            
+    
+            var marker_306670470a38bd846145b598d2c8c911 = L.marker(
+                [-6.996316, 110.398032],
+                {
+}
+            ).addTo(map_ab8edbc02a4f767329c5443ccffb9a45);
+        
+    
+            var div_icon_ae632db843e7cccd83516c25b0f59adf = L.divIcon({
+  "html": "\n            \u003cdiv style=\"\n                font-family: Arial, sans-serif;\n                font-size: 8pt; \n                font-weight: bold;\n                color: #000000;\n                background-color: rgba(255, 255, 255, 0.85);\n                border: 1px solid black;\n                border-radius: 3px;\n                padding: 2px 4px;\n                white-space: nowrap;\n                transform: translate(12px, -12px);\n            \"\u003e\n                Sam Poo Kong\n            \u003c/div\u003e\n            ",
+  "className": "empty",
+});
+        
+    
+                marker_306670470a38bd846145b598d2c8c911.setIcon(div_icon_ae632db843e7cccd83516c25b0f59adf);
+            
+    
+            var marker_b87321f8f9abbfbb6dd22666cb1ee92e = L.marker(
+                [-7.039234, 110.347312],
+                {
+}
+            ).addTo(map_ab8edbc02a4f767329c5443ccffb9a45);
+        
+    
+            var icon_067b7415c00b3df3c8730d8df28acc01 = L.AwesomeMarkers.icon(
+                {
+  "markerColor": "blue",
+  "iconColor": "white",
+  "icon": "info-sign",
+  "prefix": "glyphicon",
+  "extraClasses": "fa-rotate-0",
+}
+            );
+        
+    
+        var popup_ae777b5f88065ccb672a0759ce4752fd = L.popup({
+  "maxWidth": "100%",
+});
+
+        
+            
+                var html_25e8bf049c51fc015eb55bf9f9087d69 = $(`<div id="html_25e8bf049c51fc015eb55bf9f9087d69" style="width: 100.0%; height: 100.0%;"><b>Goa Kreo</b></div>`)[0];
+                popup_ae777b5f88065ccb672a0759ce4752fd.setContent(html_25e8bf049c51fc015eb55bf9f9087d69);
+            
+        
+
+        marker_b87321f8f9abbfbb6dd22666cb1ee92e.bindPopup(popup_ae777b5f88065ccb672a0759ce4752fd)
+        ;
+
+        
+    
+    
+            marker_b87321f8f9abbfbb6dd22666cb1ee92e.bindTooltip(
+                `<div>
+                     Vertex: Goa Kreo
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+                marker_b87321f8f9abbfbb6dd22666cb1ee92e.setIcon(icon_067b7415c00b3df3c8730d8df28acc01);
+            
+    
+            var marker_b2e7db0c2244ebe1053b32bfef80c33c = L.marker(
+                [-7.039234, 110.347312],
+                {
+}
+            ).addTo(map_ab8edbc02a4f767329c5443ccffb9a45);
+        
+    
+            var div_icon_aa68c767eff11246faa87de77743da66 = L.divIcon({
+  "html": "\n            \u003cdiv style=\"\n                font-family: Arial, sans-serif;\n                font-size: 8pt; \n                font-weight: bold;\n                color: #000000;\n                background-color: rgba(255, 255, 255, 0.85);\n                border: 1px solid black;\n                border-radius: 3px;\n                padding: 2px 4px;\n                white-space: nowrap;\n                transform: translate(12px, -12px);\n            \"\u003e\n                Goa Kreo\n            \u003c/div\u003e\n            ",
+  "className": "empty",
+});
+        
+    
+                marker_b2e7db0c2244ebe1053b32bfef80c33c.setIcon(div_icon_aa68c767eff11246faa87de77743da66);
+            
+    
+            var marker_d819eae5c52efdf495588785972e109d = L.marker(
+                [-6.973741, 110.430046],
+                {
+}
+            ).addTo(map_ab8edbc02a4f767329c5443ccffb9a45);
+        
+    
+            var icon_845260fcd83b39c7b9d0a086777a80ab = L.AwesomeMarkers.icon(
+                {
+  "markerColor": "blue",
+  "iconColor": "white",
+  "icon": "info-sign",
+  "prefix": "glyphicon",
+  "extraClasses": "fa-rotate-0",
+}
+            );
+        
+    
+        var popup_01b0e2d91d8409b41f65169860daad5c = L.popup({
+  "maxWidth": "100%",
+});
+
+        
+            
+                var html_d72db10a545aab19dc62d0c6ca033cee = $(`<div id="html_d72db10a545aab19dc62d0c6ca033cee" style="width: 100.0%; height: 100.0%;"><b>Kampung Batik</b></div>`)[0];
+                popup_01b0e2d91d8409b41f65169860daad5c.setContent(html_d72db10a545aab19dc62d0c6ca033cee);
+            
+        
+
+        marker_d819eae5c52efdf495588785972e109d.bindPopup(popup_01b0e2d91d8409b41f65169860daad5c)
+        ;
+
+        
+    
+    
+            marker_d819eae5c52efdf495588785972e109d.bindTooltip(
+                `<div>
+                     Vertex: Kampung Batik
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+                marker_d819eae5c52efdf495588785972e109d.setIcon(icon_845260fcd83b39c7b9d0a086777a80ab);
+            
+    
+            var marker_ee60820d47469e4be4869428351ff1c2 = L.marker(
+                [-6.973741, 110.430046],
+                {
+}
+            ).addTo(map_ab8edbc02a4f767329c5443ccffb9a45);
+        
+    
+            var div_icon_605bdb57565261cb81942b03d8b0d707 = L.divIcon({
+  "html": "\n            \u003cdiv style=\"\n                font-family: Arial, sans-serif;\n                font-size: 8pt; \n                font-weight: bold;\n                color: #000000;\n                background-color: rgba(255, 255, 255, 0.85);\n                border: 1px solid black;\n                border-radius: 3px;\n                padding: 2px 4px;\n                white-space: nowrap;\n                transform: translate(12px, -12px);\n            \"\u003e\n                Kampung Batik\n            \u003c/div\u003e\n            ",
+  "className": "empty",
+});
+        
+    
+                marker_ee60820d47469e4be4869428351ff1c2.setIcon(div_icon_605bdb57565261cb81942b03d8b0d707);
+            
+    
+            var marker_00d38590421b24324b90eef1570b0f6d = L.marker(
+                [-6.990412, 110.422756],
+                {
+}
+            ).addTo(map_ab8edbc02a4f767329c5443ccffb9a45);
+        
+    
+            var icon_6c3af5e5b698b288ef14108374052150 = L.AwesomeMarkers.icon(
+                {
+  "markerColor": "blue",
+  "iconColor": "white",
+  "icon": "info-sign",
+  "prefix": "glyphicon",
+  "extraClasses": "fa-rotate-0",
+}
+            );
+        
+    
+        var popup_d33d04e82b3780896c74c8682719361f = L.popup({
+  "maxWidth": "100%",
+});
+
+        
+            
+                var html_d12cc37e0e44510776d31066da3c5d50 = $(`<div id="html_d12cc37e0e44510776d31066da3c5d50" style="width: 100.0%; height: 100.0%;"><b>Simpang Lima</b></div>`)[0];
+                popup_d33d04e82b3780896c74c8682719361f.setContent(html_d12cc37e0e44510776d31066da3c5d50);
+            
+        
+
+        marker_00d38590421b24324b90eef1570b0f6d.bindPopup(popup_d33d04e82b3780896c74c8682719361f)
+        ;
+
+        
+    
+    
+            marker_00d38590421b24324b90eef1570b0f6d.bindTooltip(
+                `<div>
+                     Vertex: Simpang Lima
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+                marker_00d38590421b24324b90eef1570b0f6d.setIcon(icon_6c3af5e5b698b288ef14108374052150);
+            
+    
+            var marker_133bee7f6c5132cc05c5fbdbe68ba1f7 = L.marker(
+                [-6.990412, 110.422756],
+                {
+}
+            ).addTo(map_ab8edbc02a4f767329c5443ccffb9a45);
+        
+    
+            var div_icon_5e4bb902e643d75c5898b4db28ffb465 = L.divIcon({
+  "html": "\n            \u003cdiv style=\"\n                font-family: Arial, sans-serif;\n                font-size: 8pt; \n                font-weight: bold;\n                color: #000000;\n                background-color: rgba(255, 255, 255, 0.85);\n                border: 1px solid black;\n                border-radius: 3px;\n                padding: 2px 4px;\n                white-space: nowrap;\n                transform: translate(12px, -12px);\n            \"\u003e\n                Simpang Lima\n            \u003c/div\u003e\n            ",
+  "className": "empty",
+});
+        
+    
+                marker_133bee7f6c5132cc05c5fbdbe68ba1f7.setIcon(div_icon_5e4bb902e643d75c5898b4db28ffb465);
+            
+    
+            var marker_170003f09032a5462136075d171fc915 = L.marker(
+                [-6.948512, 110.389214],
+                {
+}
+            ).addTo(map_ab8edbc02a4f767329c5443ccffb9a45);
+        
+    
+            var icon_170174d04f83de67e9f38e0394139d96 = L.AwesomeMarkers.icon(
+                {
+  "markerColor": "blue",
+  "iconColor": "white",
+  "icon": "info-sign",
+  "prefix": "glyphicon",
+  "extraClasses": "fa-rotate-0",
+}
+            );
+        
+    
+        var popup_70d05e395d59c4bd67ce6dc5624b3e82 = L.popup({
+  "maxWidth": "100%",
+});
+
+        
+            
+                var html_9f5720859eba4a2908461b291996e339 = $(`<div id="html_9f5720859eba4a2908461b291996e339" style="width: 100.0%; height: 100.0%;"><b>Pantai Marina</b></div>`)[0];
+                popup_70d05e395d59c4bd67ce6dc5624b3e82.setContent(html_9f5720859eba4a2908461b291996e339);
+            
+        
+
+        marker_170003f09032a5462136075d171fc915.bindPopup(popup_70d05e395d59c4bd67ce6dc5624b3e82)
+        ;
+
+        
+    
+    
+            marker_170003f09032a5462136075d171fc915.bindTooltip(
+                `<div>
+                     Vertex: Pantai Marina
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+                marker_170003f09032a5462136075d171fc915.setIcon(icon_170174d04f83de67e9f38e0394139d96);
+            
+    
+            var marker_8b13ce7099d9627d0776d4255006c6f8 = L.marker(
+                [-6.948512, 110.389214],
+                {
+}
+            ).addTo(map_ab8edbc02a4f767329c5443ccffb9a45);
+        
+    
+            var div_icon_f4190173257a8a1c88ae3789609d3f1a = L.divIcon({
+  "html": "\n            \u003cdiv style=\"\n                font-family: Arial, sans-serif;\n                font-size: 8pt; \n                font-weight: bold;\n                color: #000000;\n                background-color: rgba(255, 255, 255, 0.85);\n                border: 1px solid black;\n                border-radius: 3px;\n                padding: 2px 4px;\n                white-space: nowrap;\n                transform: translate(12px, -12px);\n            \"\u003e\n                Pantai Marina\n            \u003c/div\u003e\n            ",
+  "className": "empty",
+});
+        
+    
+                marker_8b13ce7099d9627d0776d4255006c6f8.setIcon(div_icon_f4190173257a8a1c88ae3789609d3f1a);
+            
+    
+            var marker_03668a7cb09ecef21a8053a6da9e736a = L.marker(
+                [-7.014022, 110.342111],
+                {
+}
+            ).addTo(map_ab8edbc02a4f767329c5443ccffb9a45);
+        
+    
+            var icon_0ed2c6417722e2cfcd83c5253371546f = L.AwesomeMarkers.icon(
+                {
+  "markerColor": "blue",
+  "iconColor": "white",
+  "icon": "info-sign",
+  "prefix": "glyphicon",
+  "extraClasses": "fa-rotate-0",
+}
+            );
+        
+    
+        var popup_a52b43329c9cecae46fadf0fea85804f = L.popup({
+  "maxWidth": "100%",
+});
+
+        
+            
+                var html_2a7a4cafb90c5ba6fb7bcadb5e11f51d = $(`<div id="html_2a7a4cafb90c5ba6fb7bcadb5e11f51d" style="width: 100.0%; height: 100.0%;"><b>Curug Gondoriyo</b></div>`)[0];
+                popup_a52b43329c9cecae46fadf0fea85804f.setContent(html_2a7a4cafb90c5ba6fb7bcadb5e11f51d);
+            
+        
+
+        marker_03668a7cb09ecef21a8053a6da9e736a.bindPopup(popup_a52b43329c9cecae46fadf0fea85804f)
+        ;
+
+        
+    
+    
+            marker_03668a7cb09ecef21a8053a6da9e736a.bindTooltip(
+                `<div>
+                     Vertex: Curug Gondoriyo
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+                marker_03668a7cb09ecef21a8053a6da9e736a.setIcon(icon_0ed2c6417722e2cfcd83c5253371546f);
+            
+    
+            var marker_cd5fadcdb35e96ed8a248933c22240b7 = L.marker(
+                [-7.014022, 110.342111],
+                {
+}
+            ).addTo(map_ab8edbc02a4f767329c5443ccffb9a45);
+        
+    
+            var div_icon_2a098c237da3624d4c15f3b669da11d4 = L.divIcon({
+  "html": "\n            \u003cdiv style=\"\n                font-family: Arial, sans-serif;\n                font-size: 8pt; \n                font-weight: bold;\n                color: #000000;\n                background-color: rgba(255, 255, 255, 0.85);\n                border: 1px solid black;\n                border-radius: 3px;\n                padding: 2px 4px;\n                white-space: nowrap;\n                transform: translate(12px, -12px);\n            \"\u003e\n                Curug Gondoriyo\n            \u003c/div\u003e\n            ",
+  "className": "empty",
+});
+        
+    
+                marker_cd5fadcdb35e96ed8a248933c22240b7.setIcon(div_icon_2a098c237da3624d4c15f3b669da11d4);
+            
+    
+            var marker_9306385cc835b8d8781669dc6ec18037 = L.marker(
+                [-7.033145, 110.354222],
+                {
+}
+            ).addTo(map_ab8edbc02a4f767329c5443ccffb9a45);
+        
+    
+            var icon_3e90f6e7e6735776b8b34e2f2c7f3d63 = L.AwesomeMarkers.icon(
+                {
+  "markerColor": "blue",
+  "iconColor": "white",
+  "icon": "info-sign",
+  "prefix": "glyphicon",
+  "extraClasses": "fa-rotate-0",
+}
+            );
+        
+    
+        var popup_9bf984779ee9b210ad3517ac79a030b6 = L.popup({
+  "maxWidth": "100%",
+});
+
+        
+            
+                var html_8a0471227068ca5010bbb730299f156d = $(`<div id="html_8a0471227068ca5010bbb730299f156d" style="width: 100.0%; height: 100.0%;"><b>Desa Wisata Kandri</b></div>`)[0];
+                popup_9bf984779ee9b210ad3517ac79a030b6.setContent(html_8a0471227068ca5010bbb730299f156d);
+            
+        
+
+        marker_9306385cc835b8d8781669dc6ec18037.bindPopup(popup_9bf984779ee9b210ad3517ac79a030b6)
+        ;
+
+        
+    
+    
+            marker_9306385cc835b8d8781669dc6ec18037.bindTooltip(
+                `<div>
+                     Vertex: Desa Wisata Kandri
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+                marker_9306385cc835b8d8781669dc6ec18037.setIcon(icon_3e90f6e7e6735776b8b34e2f2c7f3d63);
+            
+    
+            var marker_6d03a88faddbefdb1212c571bb95107f = L.marker(
+                [-7.033145, 110.354222],
+                {
+}
+            ).addTo(map_ab8edbc02a4f767329c5443ccffb9a45);
+        
+    
+            var div_icon_7ca57297132258b94cc66fc50753dbc4 = L.divIcon({
+  "html": "\n            \u003cdiv style=\"\n                font-family: Arial, sans-serif;\n                font-size: 8pt; \n                font-weight: bold;\n                color: #000000;\n                background-color: rgba(255, 255, 255, 0.85);\n                border: 1px solid black;\n                border-radius: 3px;\n                padding: 2px 4px;\n                white-space: nowrap;\n                transform: translate(12px, -12px);\n            \"\u003e\n                Desa Wisata Kandri\n            \u003c/div\u003e\n            ",
+  "className": "empty",
+});
+        
+    
+                marker_6d03a88faddbefdb1212c571bb95107f.setIcon(div_icon_7ca57297132258b94cc66fc50753dbc4);
+            
+    
+            var marker_c26e166f8d867aa79b246abd086819b2 = L.marker(
+                [-7.018333, 110.334444],
+                {
+}
+            ).addTo(map_ab8edbc02a4f767329c5443ccffb9a45);
+        
+    
+            var icon_bec2cf926dec19ecdd89c11ec3c6ab44 = L.AwesomeMarkers.icon(
+                {
+  "markerColor": "blue",
+  "iconColor": "white",
+  "icon": "info-sign",
+  "prefix": "glyphicon",
+  "extraClasses": "fa-rotate-0",
+}
+            );
+        
+    
+        var popup_63488ef20e8cbcc54bddaf6b32d7eafd = L.popup({
+  "maxWidth": "100%",
+});
+
+        
+            
+                var html_e9c7c119fb885bc4b85b58d60bf0cecd = $(`<div id="html_e9c7c119fb885bc4b85b58d60bf0cecd" style="width: 100.0%; height: 100.0%;"><b>Desa Wisata Kedungpane</b></div>`)[0];
+                popup_63488ef20e8cbcc54bddaf6b32d7eafd.setContent(html_e9c7c119fb885bc4b85b58d60bf0cecd);
+            
+        
+
+        marker_c26e166f8d867aa79b246abd086819b2.bindPopup(popup_63488ef20e8cbcc54bddaf6b32d7eafd)
+        ;
+
+        
+    
+    
+            marker_c26e166f8d867aa79b246abd086819b2.bindTooltip(
+                `<div>
+                     Vertex: Desa Wisata Kedungpane
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+                marker_c26e166f8d867aa79b246abd086819b2.setIcon(icon_bec2cf926dec19ecdd89c11ec3c6ab44);
+            
+    
+            var marker_b69f17b1d266ff082fd6e82218d59468 = L.marker(
+                [-7.018333, 110.334444],
+                {
+}
+            ).addTo(map_ab8edbc02a4f767329c5443ccffb9a45);
+        
+    
+            var div_icon_4c3fab59e121c6104e359725c449cfca = L.divIcon({
+  "html": "\n            \u003cdiv style=\"\n                font-family: Arial, sans-serif;\n                font-size: 8pt; \n                font-weight: bold;\n                color: #000000;\n                background-color: rgba(255, 255, 255, 0.85);\n                border: 1px solid black;\n                border-radius: 3px;\n                padding: 2px 4px;\n                white-space: nowrap;\n                transform: translate(12px, -12px);\n            \"\u003e\n                Desa Wisata Kedungpane\n            \u003c/div\u003e\n            ",
+  "className": "empty",
+});
+        
+    
+                marker_b69f17b1d266ff082fd6e82218d59468.setIcon(div_icon_4c3fab59e121c6104e359725c449cfca);
+            
+    
+            var marker_e6f034bed346b3b53a63f3bd356e87c3 = L.marker(
+                [-7.001555, 110.468666],
+                {
+}
+            ).addTo(map_ab8edbc02a4f767329c5443ccffb9a45);
+        
+    
+            var icon_361e6b05cc9e7022bcab095d07c12fe8 = L.AwesomeMarkers.icon(
+                {
+  "markerColor": "blue",
+  "iconColor": "white",
+  "icon": "info-sign",
+  "prefix": "glyphicon",
+  "extraClasses": "fa-rotate-0",
+}
+            );
+        
+    
+        var popup_047c856e07cba0477f35a8368c7e7c29 = L.popup({
+  "maxWidth": "100%",
+});
+
+        
+            
+                var html_19890665d7130751b5eacd89545fb210 = $(`<div id="html_19890665d7130751b5eacd89545fb210" style="width: 100.0%; height: 100.0%;"><b>Gelanggang Pemuda Manunggal</b></div>`)[0];
+                popup_047c856e07cba0477f35a8368c7e7c29.setContent(html_19890665d7130751b5eacd89545fb210);
+            
+        
+
+        marker_e6f034bed346b3b53a63f3bd356e87c3.bindPopup(popup_047c856e07cba0477f35a8368c7e7c29)
+        ;
+
+        
+    
+    
+            marker_e6f034bed346b3b53a63f3bd356e87c3.bindTooltip(
+                `<div>
+                     Vertex: Gelanggang Pemuda Manunggal
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+                marker_e6f034bed346b3b53a63f3bd356e87c3.setIcon(icon_361e6b05cc9e7022bcab095d07c12fe8);
+            
+    
+            var marker_1955ff40f99499659a6c04a23f73319e = L.marker(
+                [-7.001555, 110.468666],
+                {
+}
+            ).addTo(map_ab8edbc02a4f767329c5443ccffb9a45);
+        
+    
+            var div_icon_370f3b48901fd4e3d18e03b3f6fc81af = L.divIcon({
+  "html": "\n            \u003cdiv style=\"\n                font-family: Arial, sans-serif;\n                font-size: 8pt; \n                font-weight: bold;\n                color: #000000;\n                background-color: rgba(255, 255, 255, 0.85);\n                border: 1px solid black;\n                border-radius: 3px;\n                padding: 2px 4px;\n                white-space: nowrap;\n                transform: translate(12px, -12px);\n            \"\u003e\n                Gelanggang Pemuda Manunggal\n            \u003c/div\u003e\n            ",
+  "className": "empty",
+});
+        
+    
+                marker_1955ff40f99499659a6c04a23f73319e.setIcon(div_icon_370f3b48901fd4e3d18e03b3f6fc81af);
+            
+    
+            var marker_500b03cd948202426bd64395db7423e4 = L.marker(
+                [-7.072777, 110.375888],
+                {
+}
+            ).addTo(map_ab8edbc02a4f767329c5443ccffb9a45);
+        
+    
+            var icon_62ff092dbf749242a5c475265263dd42 = L.AwesomeMarkers.icon(
+                {
+  "markerColor": "blue",
+  "iconColor": "white",
+  "icon": "info-sign",
+  "prefix": "glyphicon",
+  "extraClasses": "fa-rotate-0",
+}
+            );
+        
+    
+        var popup_63d308933b33801a5255eb82225dd23b = L.popup({
+  "maxWidth": "100%",
+});
+
+        
+            
+                var html_726001f572d9a06a397cb0887bc5a4c9 = $(`<div id="html_726001f572d9a06a397cb0887bc5a4c9" style="width: 100.0%; height: 100.0%;"><b>Firdaus Fatimah Zahra</b></div>`)[0];
+                popup_63d308933b33801a5255eb82225dd23b.setContent(html_726001f572d9a06a397cb0887bc5a4c9);
+            
+        
+
+        marker_500b03cd948202426bd64395db7423e4.bindPopup(popup_63d308933b33801a5255eb82225dd23b)
+        ;
+
+        
+    
+    
+            marker_500b03cd948202426bd64395db7423e4.bindTooltip(
+                `<div>
+                     Vertex: Firdaus Fatimah Zahra
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+                marker_500b03cd948202426bd64395db7423e4.setIcon(icon_62ff092dbf749242a5c475265263dd42);
+            
+    
+            var marker_7ec88f00764af82b53449f420ee52367 = L.marker(
+                [-7.072777, 110.375888],
+                {
+}
+            ).addTo(map_ab8edbc02a4f767329c5443ccffb9a45);
+        
+    
+            var div_icon_dc251f0c8831fb2c60578b59beeaf5e2 = L.divIcon({
+  "html": "\n            \u003cdiv style=\"\n                font-family: Arial, sans-serif;\n                font-size: 8pt; \n                font-weight: bold;\n                color: #000000;\n                background-color: rgba(255, 255, 255, 0.85);\n                border: 1px solid black;\n                border-radius: 3px;\n                padding: 2px 4px;\n                white-space: nowrap;\n                transform: translate(12px, -12px);\n            \"\u003e\n                Firdaus Fatimah Zahra\n            \u003c/div\u003e\n            ",
+  "className": "empty",
+});
+        
+    
+                marker_7ec88f00764af82b53449f420ee52367.setIcon(div_icon_dc251f0c8831fb2c60578b59beeaf5e2);
+            
+    
+            var marker_b17b8ea65df5e99a50665fa418a0f010 = L.marker(
+                [-7.067111, 110.370222],
+                {
+}
+            ).addTo(map_ab8edbc02a4f767329c5443ccffb9a45);
+        
+    
+            var icon_dc709ff34d5d36cc60fbd0a862864223 = L.AwesomeMarkers.icon(
+                {
+  "markerColor": "blue",
+  "iconColor": "white",
+  "icon": "info-sign",
+  "prefix": "glyphicon",
+  "extraClasses": "fa-rotate-0",
+}
+            );
+        
+    
+        var popup_471a21cede1affe887e7717e21e342f4 = L.popup({
+  "maxWidth": "100%",
+});
+
+        
+            
+                var html_630e02bb0282eebdf2ba75c88fee5ce3 = $(`<div id="html_630e02bb0282eebdf2ba75c88fee5ce3" style="width: 100.0%; height: 100.0%;"><b>D'pong Semarang</b></div>`)[0];
+                popup_471a21cede1affe887e7717e21e342f4.setContent(html_630e02bb0282eebdf2ba75c88fee5ce3);
+            
+        
+
+        marker_b17b8ea65df5e99a50665fa418a0f010.bindPopup(popup_471a21cede1affe887e7717e21e342f4)
+        ;
+
+        
+    
+    
+            marker_b17b8ea65df5e99a50665fa418a0f010.bindTooltip(
+                `<div>
+                     Vertex: D'pong Semarang
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+                marker_b17b8ea65df5e99a50665fa418a0f010.setIcon(icon_dc709ff34d5d36cc60fbd0a862864223);
+            
+    
+            var marker_077f7023a50db2c313a2cc234e6e1dee = L.marker(
+                [-7.067111, 110.370222],
+                {
+}
+            ).addTo(map_ab8edbc02a4f767329c5443ccffb9a45);
+        
+    
+            var div_icon_07e272141acf029b9e2fda650b6ef200 = L.divIcon({
+  "html": "\n            \u003cdiv style=\"\n                font-family: Arial, sans-serif;\n                font-size: 8pt; \n                font-weight: bold;\n                color: #000000;\n                background-color: rgba(255, 255, 255, 0.85);\n                border: 1px solid black;\n                border-radius: 3px;\n                padding: 2px 4px;\n                white-space: nowrap;\n                transform: translate(12px, -12px);\n            \"\u003e\n                D\u0027pong Semarang\n            \u003c/div\u003e\n            ",
+  "className": "empty",
+});
+        
+    
+                marker_077f7023a50db2c313a2cc234e6e1dee.setIcon(div_icon_07e272141acf029b9e2fda650b6ef200);
+            
+    
+            var marker_897bd46127f7ca5cdbddc9230e3e8839 = L.marker(
+                [-7.037444, 110.395333],
+                {
+}
+            ).addTo(map_ab8edbc02a4f767329c5443ccffb9a45);
+        
+    
+            var icon_86b0203da1125a59a6d9e0ef9d900619 = L.AwesomeMarkers.icon(
+                {
+  "markerColor": "blue",
+  "iconColor": "white",
+  "icon": "info-sign",
+  "prefix": "glyphicon",
+  "extraClasses": "fa-rotate-0",
+}
+            );
+        
+    
+        var popup_e06bef48fe8cb9228c52f8dbd27e1209 = L.popup({
+  "maxWidth": "100%",
+});
+
+        
+            
+                var html_9ae9a9a12bb280fc51e5a4980196939f = $(`<div id="html_9ae9a9a12bb280fc51e5a4980196939f" style="width: 100.0%; height: 100.0%;"><b>Hutan Wisata Tinjomoyo</b></div>`)[0];
+                popup_e06bef48fe8cb9228c52f8dbd27e1209.setContent(html_9ae9a9a12bb280fc51e5a4980196939f);
+            
+        
+
+        marker_897bd46127f7ca5cdbddc9230e3e8839.bindPopup(popup_e06bef48fe8cb9228c52f8dbd27e1209)
+        ;
+
+        
+    
+    
+            marker_897bd46127f7ca5cdbddc9230e3e8839.bindTooltip(
+                `<div>
+                     Vertex: Hutan Wisata Tinjomoyo
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+                marker_897bd46127f7ca5cdbddc9230e3e8839.setIcon(icon_86b0203da1125a59a6d9e0ef9d900619);
+            
+    
+            var marker_e86471a98a1694950deaeba2c8db3f2e = L.marker(
+                [-7.037444, 110.395333],
+                {
+}
+            ).addTo(map_ab8edbc02a4f767329c5443ccffb9a45);
+        
+    
+            var div_icon_ea74bb81d5b793486de7f9b5322f16dd = L.divIcon({
+  "html": "\n            \u003cdiv style=\"\n                font-family: Arial, sans-serif;\n                font-size: 8pt; \n                font-weight: bold;\n                color: #000000;\n                background-color: rgba(255, 255, 255, 0.85);\n                border: 1px solid black;\n                border-radius: 3px;\n                padding: 2px 4px;\n                white-space: nowrap;\n                transform: translate(12px, -12px);\n            \"\u003e\n                Hutan Wisata Tinjomoyo\n            \u003c/div\u003e\n            ",
+  "className": "empty",
+});
+        
+    
+                marker_e86471a98a1694950deaeba2c8db3f2e.setIcon(div_icon_ea74bb81d5b793486de7f9b5322f16dd);
+            
+    
+            var marker_d89427049e5e17fac48323a553eed8db = L.marker(
+                [-6.993555, 110.383444],
+                {
+}
+            ).addTo(map_ab8edbc02a4f767329c5443ccffb9a45);
+        
+    
+            var icon_0f259c75945a8de7a1db4b52b604a013 = L.AwesomeMarkers.icon(
+                {
+  "markerColor": "blue",
+  "iconColor": "white",
+  "icon": "info-sign",
+  "prefix": "glyphicon",
+  "extraClasses": "fa-rotate-0",
+}
+            );
+        
+    
+        var popup_8146b1978fb36138cb7ae26b646e2186 = L.popup({
+  "maxWidth": "100%",
+});
+
+        
+            
+                var html_5abc426694cb1b12760b56e09029ecaa = $(`<div id="html_5abc426694cb1b12760b56e09029ecaa" style="width: 100.0%; height: 100.0%;"><b>Jungle Toon Waterpark</b></div>`)[0];
+                popup_8146b1978fb36138cb7ae26b646e2186.setContent(html_5abc426694cb1b12760b56e09029ecaa);
+            
+        
+
+        marker_d89427049e5e17fac48323a553eed8db.bindPopup(popup_8146b1978fb36138cb7ae26b646e2186)
+        ;
+
+        
+    
+    
+            marker_d89427049e5e17fac48323a553eed8db.bindTooltip(
+                `<div>
+                     Vertex: Jungle Toon Waterpark
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+                marker_d89427049e5e17fac48323a553eed8db.setIcon(icon_0f259c75945a8de7a1db4b52b604a013);
+            
+    
+            var marker_1fa40a6e3cbf183edd5df6b2cf4e3ab4 = L.marker(
+                [-6.993555, 110.383444],
+                {
+}
+            ).addTo(map_ab8edbc02a4f767329c5443ccffb9a45);
+        
+    
+            var div_icon_7f6fd1c7d3947904245306e933550f26 = L.divIcon({
+  "html": "\n            \u003cdiv style=\"\n                font-family: Arial, sans-serif;\n                font-size: 8pt; \n                font-weight: bold;\n                color: #000000;\n                background-color: rgba(255, 255, 255, 0.85);\n                border: 1px solid black;\n                border-radius: 3px;\n                padding: 2px 4px;\n                white-space: nowrap;\n                transform: translate(12px, -12px);\n            \"\u003e\n                Jungle Toon Waterpark\n            \u003c/div\u003e\n            ",
+  "className": "empty",
+});
+        
+    
+                marker_1fa40a6e3cbf183edd5df6b2cf4e3ab4.setIcon(div_icon_7f6fd1c7d3947904245306e933550f26);
+            
+    
+            var marker_0d5ebe03e101fb7d55d09e19f9eddf83 = L.marker(
+                [-6.985666, 110.350555],
+                {
+}
+            ).addTo(map_ab8edbc02a4f767329c5443ccffb9a45);
+        
+    
+            var icon_93781f5a840e52d936e3762d1932ad16 = L.AwesomeMarkers.icon(
+                {
+  "markerColor": "blue",
+  "iconColor": "white",
+  "icon": "info-sign",
+  "prefix": "glyphicon",
+  "extraClasses": "fa-rotate-0",
+}
+            );
+        
+    
+        var popup_0dc8d6c49c7e5181da3a43c67dd0fa5e = L.popup({
+  "maxWidth": "100%",
+});
+
+        
+            
+                var html_b8481e987c3d2373c459ef906ddfbad8 = $(`<div id="html_b8481e987c3d2373c459ef906ddfbad8" style="width: 100.0%; height: 100.0%;"><b>Kampoeng Wisata Taman Lele</b></div>`)[0];
+                popup_0dc8d6c49c7e5181da3a43c67dd0fa5e.setContent(html_b8481e987c3d2373c459ef906ddfbad8);
+            
+        
+
+        marker_0d5ebe03e101fb7d55d09e19f9eddf83.bindPopup(popup_0dc8d6c49c7e5181da3a43c67dd0fa5e)
+        ;
+
+        
+    
+    
+            marker_0d5ebe03e101fb7d55d09e19f9eddf83.bindTooltip(
+                `<div>
+                     Vertex: Kampoeng Wisata Taman Lele
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+                marker_0d5ebe03e101fb7d55d09e19f9eddf83.setIcon(icon_93781f5a840e52d936e3762d1932ad16);
+            
+    
+            var marker_ec7ac588fd766d828a439c45e3495f08 = L.marker(
+                [-6.985666, 110.350555],
+                {
+}
+            ).addTo(map_ab8edbc02a4f767329c5443ccffb9a45);
+        
+    
+            var div_icon_473e624a4ba2652c6941cc7ac76f2f6c = L.divIcon({
+  "html": "\n            \u003cdiv style=\"\n                font-family: Arial, sans-serif;\n                font-size: 8pt; \n                font-weight: bold;\n                color: #000000;\n                background-color: rgba(255, 255, 255, 0.85);\n                border: 1px solid black;\n                border-radius: 3px;\n                padding: 2px 4px;\n                white-space: nowrap;\n                transform: translate(12px, -12px);\n            \"\u003e\n                Kampoeng Wisata Taman Lele\n            \u003c/div\u003e\n            ",
+  "className": "empty",
+});
+        
+    
+                marker_ec7ac588fd766d828a439c45e3495f08.setIcon(div_icon_473e624a4ba2652c6941cc7ac76f2f6c);
+            
+    
+            var marker_b012dfc4a6e89ba2d646221a0ae658dd = L.marker(
+                [-7.027777, 110.390666],
+                {
+}
+            ).addTo(map_ab8edbc02a4f767329c5443ccffb9a45);
+        
+    
+            var icon_2570f15819eb31b539b9bf653de26214 = L.AwesomeMarkers.icon(
+                {
+  "markerColor": "blue",
+  "iconColor": "white",
+  "icon": "info-sign",
+  "prefix": "glyphicon",
+  "extraClasses": "fa-rotate-0",
+}
+            );
+        
+    
+        var popup_35ad77bfb5182250fb2c83ffb87b0f0b = L.popup({
+  "maxWidth": "100%",
+});
+
+        
+            
+                var html_7a9c4f2d63e02307027dde07093bb7b4 = $(`<div id="html_7a9c4f2d63e02307027dde07093bb7b4" style="width: 100.0%; height: 100.0%;"><b>Kampung Jawi</b></div>`)[0];
+                popup_35ad77bfb5182250fb2c83ffb87b0f0b.setContent(html_7a9c4f2d63e02307027dde07093bb7b4);
+            
+        
+
+        marker_b012dfc4a6e89ba2d646221a0ae658dd.bindPopup(popup_35ad77bfb5182250fb2c83ffb87b0f0b)
+        ;
+
+        
+    
+    
+            marker_b012dfc4a6e89ba2d646221a0ae658dd.bindTooltip(
+                `<div>
+                     Vertex: Kampung Jawi
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+                marker_b012dfc4a6e89ba2d646221a0ae658dd.setIcon(icon_2570f15819eb31b539b9bf653de26214);
+            
+    
+            var marker_8025ce0febe7e6b7ae86a242f4431fa8 = L.marker(
+                [-7.027777, 110.390666],
+                {
+}
+            ).addTo(map_ab8edbc02a4f767329c5443ccffb9a45);
+        
+    
+            var div_icon_22b3ba2d37cbaf683d31446e9f83ecb1 = L.divIcon({
+  "html": "\n            \u003cdiv style=\"\n                font-family: Arial, sans-serif;\n                font-size: 8pt; \n                font-weight: bold;\n                color: #000000;\n                background-color: rgba(255, 255, 255, 0.85);\n                border: 1px solid black;\n                border-radius: 3px;\n                padding: 2px 4px;\n                white-space: nowrap;\n                transform: translate(12px, -12px);\n            \"\u003e\n                Kampung Jawi\n            \u003c/div\u003e\n            ",
+  "className": "empty",
+});
+        
+    
+                marker_8025ce0febe7e6b7ae86a242f4431fa8.setIcon(div_icon_22b3ba2d37cbaf683d31446e9f83ecb1);
+            
+    
+            var marker_15d1eaabfb97020dba8fd524bfd2c32b = L.marker(
+                [-6.992888, 110.414777],
+                {
+}
+            ).addTo(map_ab8edbc02a4f767329c5443ccffb9a45);
+        
+    
+            var icon_3a1149df5e7c45c015ad177e2e3a38cb = L.AwesomeMarkers.icon(
+                {
+  "markerColor": "blue",
+  "iconColor": "white",
+  "icon": "info-sign",
+  "prefix": "glyphicon",
+  "extraClasses": "fa-rotate-0",
+}
+            );
+        
+    
+        var popup_0f1fb1a5ae5a8b15dffd32a4cc5620b8 = L.popup({
+  "maxWidth": "100%",
+});
+
+        
+            
+                var html_02c6a4ace584d4ddbb20d783cfc525b6 = $(`<div id="html_02c6a4ace584d4ddbb20d783cfc525b6" style="width: 100.0%; height: 100.0%;"><b>Makam Ki Ageng Pandanaran</b></div>`)[0];
+                popup_0f1fb1a5ae5a8b15dffd32a4cc5620b8.setContent(html_02c6a4ace584d4ddbb20d783cfc525b6);
+            
+        
+
+        marker_15d1eaabfb97020dba8fd524bfd2c32b.bindPopup(popup_0f1fb1a5ae5a8b15dffd32a4cc5620b8)
+        ;
+
+        
+    
+    
+            marker_15d1eaabfb97020dba8fd524bfd2c32b.bindTooltip(
+                `<div>
+                     Vertex: Makam Ki Ageng Pandanaran
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+                marker_15d1eaabfb97020dba8fd524bfd2c32b.setIcon(icon_3a1149df5e7c45c015ad177e2e3a38cb);
+            
+    
+            var marker_eae98b910be7162949c1564fdebc6ac8 = L.marker(
+                [-6.992888, 110.414777],
+                {
+}
+            ).addTo(map_ab8edbc02a4f767329c5443ccffb9a45);
+        
+    
+            var div_icon_2a51b0039509b719fa160797fec4847f = L.divIcon({
+  "html": "\n            \u003cdiv style=\"\n                font-family: Arial, sans-serif;\n                font-size: 8pt; \n                font-weight: bold;\n                color: #000000;\n                background-color: rgba(255, 255, 255, 0.85);\n                border: 1px solid black;\n                border-radius: 3px;\n                padding: 2px 4px;\n                white-space: nowrap;\n                transform: translate(12px, -12px);\n            \"\u003e\n                Makam Ki Ageng Pandanaran\n            \u003c/div\u003e\n            ",
+  "className": "empty",
+});
+        
+    
+                marker_eae98b910be7162949c1564fdebc6ac8.setIcon(div_icon_2a51b0039509b719fa160797fec4847f);
+            
+    
+            var marker_71f0b70111b73c761c3e0dfe3fe98257 = L.marker(
+                [-6.983999, 110.446888],
+                {
+}
+            ).addTo(map_ab8edbc02a4f767329c5443ccffb9a45);
+        
+    
+            var icon_7514aa21848200e60588b865322eaa41 = L.AwesomeMarkers.icon(
+                {
+  "markerColor": "blue",
+  "iconColor": "white",
+  "icon": "info-sign",
+  "prefix": "glyphicon",
+  "extraClasses": "fa-rotate-0",
+}
+            );
+        
+    
+        var popup_271945b823dec0624e6f139ed795f79b = L.popup({
+  "maxWidth": "100%",
+});
+
+        
+            
+                var html_09463adde9b16e3272110a654b44a4ac = $(`<div id="html_09463adde9b16e3272110a654b44a4ac" style="width: 100.0%; height: 100.0%;"><b>Masjid Agung Jawa Tengah</b></div>`)[0];
+                popup_271945b823dec0624e6f139ed795f79b.setContent(html_09463adde9b16e3272110a654b44a4ac);
+            
+        
+
+        marker_71f0b70111b73c761c3e0dfe3fe98257.bindPopup(popup_271945b823dec0624e6f139ed795f79b)
+        ;
+
+        
+    
+    
+            marker_71f0b70111b73c761c3e0dfe3fe98257.bindTooltip(
+                `<div>
+                     Vertex: Masjid Agung Jawa Tengah
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+                marker_71f0b70111b73c761c3e0dfe3fe98257.setIcon(icon_7514aa21848200e60588b865322eaa41);
+            
+    
+            var marker_a539ccfacd71e45e8cf2476a64c7244b = L.marker(
+                [-6.983999, 110.446888],
+                {
+}
+            ).addTo(map_ab8edbc02a4f767329c5443ccffb9a45);
+        
+    
+            var div_icon_0e85a83198c885d3df79ebf9bee6bee5 = L.divIcon({
+  "html": "\n            \u003cdiv style=\"\n                font-family: Arial, sans-serif;\n                font-size: 8pt; \n                font-weight: bold;\n                color: #000000;\n                background-color: rgba(255, 255, 255, 0.85);\n                border: 1px solid black;\n                border-radius: 3px;\n                padding: 2px 4px;\n                white-space: nowrap;\n                transform: translate(12px, -12px);\n            \"\u003e\n                Masjid Agung Jawa Tengah\n            \u003c/div\u003e\n            ",
+  "className": "empty",
+});
+        
+    
+                marker_a539ccfacd71e45e8cf2476a64c7244b.setIcon(div_icon_0e85a83198c885d3df79ebf9bee6bee5);
+            
+    
+            var marker_6b70e25fd53fbb69691dca72372fed78 = L.marker(
+                [-6.983111, 110.408222],
+                {
+}
+            ).addTo(map_ab8edbc02a4f767329c5443ccffb9a45);
+        
+    
+            var icon_33d179e655fd95d37010923ce98ae3a3 = L.AwesomeMarkers.icon(
+                {
+  "markerColor": "blue",
+  "iconColor": "white",
+  "icon": "info-sign",
+  "prefix": "glyphicon",
+  "extraClasses": "fa-rotate-0",
+}
+            );
+        
+    
+        var popup_2827c3e6e37b906065bc6bb7c407fcc6 = L.popup({
+  "maxWidth": "100%",
+});
+
+        
+            
+                var html_b615b6806465b0f25905c1024a37e670 = $(`<div id="html_b615b6806465b0f25905c1024a37e670" style="width: 100.0%; height: 100.0%;"><b>Museum Perjuangan Mandala Bhakti</b></div>`)[0];
+                popup_2827c3e6e37b906065bc6bb7c407fcc6.setContent(html_b615b6806465b0f25905c1024a37e670);
+            
+        
+
+        marker_6b70e25fd53fbb69691dca72372fed78.bindPopup(popup_2827c3e6e37b906065bc6bb7c407fcc6)
+        ;
+
+        
+    
+    
+            marker_6b70e25fd53fbb69691dca72372fed78.bindTooltip(
+                `<div>
+                     Vertex: Museum Perjuangan Mandala Bhakti
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+                marker_6b70e25fd53fbb69691dca72372fed78.setIcon(icon_33d179e655fd95d37010923ce98ae3a3);
+            
+    
+            var marker_cf20db9e21b6affa32f55c317faeaefa = L.marker(
+                [-6.983111, 110.408222],
+                {
+}
+            ).addTo(map_ab8edbc02a4f767329c5443ccffb9a45);
+        
+    
+            var div_icon_8ae0372d3e2e2be23063064f568f3584 = L.divIcon({
+  "html": "\n            \u003cdiv style=\"\n                font-family: Arial, sans-serif;\n                font-size: 8pt; \n                font-weight: bold;\n                color: #000000;\n                background-color: rgba(255, 255, 255, 0.85);\n                border: 1px solid black;\n                border-radius: 3px;\n                padding: 2px 4px;\n                white-space: nowrap;\n                transform: translate(12px, -12px);\n            \"\u003e\n                Museum Perjuangan Mandala Bhakti\n            \u003c/div\u003e\n            ",
+  "className": "empty",
+});
+        
+    
+                marker_cf20db9e21b6affa32f55c317faeaefa.setIcon(div_icon_8ae0372d3e2e2be23063064f568f3584);
+            
+    
+            var marker_9e94fd7ec5ae95bd9c3d9ec5725ba28a = L.marker(
+                [-7.013222, 110.407333],
+                {
+}
+            ).addTo(map_ab8edbc02a4f767329c5443ccffb9a45);
+        
+    
+            var icon_cd483ec252ca74da125584759ebaadac = L.AwesomeMarkers.icon(
+                {
+  "markerColor": "blue",
+  "iconColor": "white",
+  "icon": "info-sign",
+  "prefix": "glyphicon",
+  "extraClasses": "fa-rotate-0",
+}
+            );
+        
+    
+        var popup_9b4a03082b4f83b39b3d3278f26ecc21 = L.popup({
+  "maxWidth": "100%",
+});
+
+        
+            
+                var html_20d7806fa010c6fd1556629417ee2cfd = $(`<div id="html_20d7806fa010c6fd1556629417ee2cfd" style="width: 100.0%; height: 100.0%;"><b>Museum Rekor Dunia Indonesia</b></div>`)[0];
+                popup_9b4a03082b4f83b39b3d3278f26ecc21.setContent(html_20d7806fa010c6fd1556629417ee2cfd);
+            
+        
+
+        marker_9e94fd7ec5ae95bd9c3d9ec5725ba28a.bindPopup(popup_9b4a03082b4f83b39b3d3278f26ecc21)
+        ;
+
+        
+    
+    
+            marker_9e94fd7ec5ae95bd9c3d9ec5725ba28a.bindTooltip(
+                `<div>
+                     Vertex: Museum Rekor Dunia Indonesia
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+                marker_9e94fd7ec5ae95bd9c3d9ec5725ba28a.setIcon(icon_cd483ec252ca74da125584759ebaadac);
+            
+    
+            var marker_9b77badb9d6bd379e2f4b14a614ec56f = L.marker(
+                [-7.013222, 110.407333],
+                {
+}
+            ).addTo(map_ab8edbc02a4f767329c5443ccffb9a45);
+        
+    
+            var div_icon_fa62505ea1cb919bdfcda9059d48c47a = L.divIcon({
+  "html": "\n            \u003cdiv style=\"\n                font-family: Arial, sans-serif;\n                font-size: 8pt; \n                font-weight: bold;\n                color: #000000;\n                background-color: rgba(255, 255, 255, 0.85);\n                border: 1px solid black;\n                border-radius: 3px;\n                padding: 2px 4px;\n                white-space: nowrap;\n                transform: translate(12px, -12px);\n            \"\u003e\n                Museum Rekor Dunia Indonesia\n            \u003c/div\u003e\n            ",
+  "className": "empty",
+});
+        
+    
+                marker_9b77badb9d6bd379e2f4b14a614ec56f.setIcon(div_icon_fa62505ea1cb919bdfcda9059d48c47a);
+            
+    
+            var marker_77392e959f2b8ffd73d6735d99eac3ac = L.marker(
+                [-6.985333, 110.388444],
+                {
+}
+            ).addTo(map_ab8edbc02a4f767329c5443ccffb9a45);
+        
+    
+            var icon_97406f4dc19c10ca99d7323759eaa48c = L.AwesomeMarkers.icon(
+                {
+  "markerColor": "blue",
+  "iconColor": "white",
+  "icon": "info-sign",
+  "prefix": "glyphicon",
+  "extraClasses": "fa-rotate-0",
+}
+            );
+        
+    
+        var popup_091d3f4fbcae28128f75afae6eda2426 = L.popup({
+  "maxWidth": "100%",
+});
+
+        
+            
+                var html_0274582fed6cc310c540f73980b67aea = $(`<div id="html_0274582fed6cc310c540f73980b67aea" style="width: 100.0%; height: 100.0%;"><b>Museum Ranggawarsita</b></div>`)[0];
+                popup_091d3f4fbcae28128f75afae6eda2426.setContent(html_0274582fed6cc310c540f73980b67aea);
+            
+        
+
+        marker_77392e959f2b8ffd73d6735d99eac3ac.bindPopup(popup_091d3f4fbcae28128f75afae6eda2426)
+        ;
+
+        
+    
+    
+            marker_77392e959f2b8ffd73d6735d99eac3ac.bindTooltip(
+                `<div>
+                     Vertex: Museum Ranggawarsita
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+                marker_77392e959f2b8ffd73d6735d99eac3ac.setIcon(icon_97406f4dc19c10ca99d7323759eaa48c);
+            
+    
+            var marker_0bbe979828f499fc164c2f7474346c5e = L.marker(
+                [-6.985333, 110.388444],
+                {
+}
+            ).addTo(map_ab8edbc02a4f767329c5443ccffb9a45);
+        
+    
+            var div_icon_dfb6185f47d076829999786694636952 = L.divIcon({
+  "html": "\n            \u003cdiv style=\"\n                font-family: Arial, sans-serif;\n                font-size: 8pt; \n                font-weight: bold;\n                color: #000000;\n                background-color: rgba(255, 255, 255, 0.85);\n                border: 1px solid black;\n                border-radius: 3px;\n                padding: 2px 4px;\n                white-space: nowrap;\n                transform: translate(12px, -12px);\n            \"\u003e\n                Museum Ranggawarsita\n            \u003c/div\u003e\n            ",
+  "className": "empty",
+});
+        
+    
+                marker_0bbe979828f499fc164c2f7474346c5e.setIcon(div_icon_dfb6185f47d076829999786694636952);
+            
+    
+            var marker_91f10bf4d6c6affde0e5828c4e487b2a = L.marker(
+                [-6.968444, 110.427555],
+                {
+}
+            ).addTo(map_ab8edbc02a4f767329c5443ccffb9a45);
+        
+    
+            var icon_27e8343b75038a4c8976662d88988ecb = L.AwesomeMarkers.icon(
+                {
+  "markerColor": "blue",
+  "iconColor": "white",
+  "icon": "info-sign",
+  "prefix": "glyphicon",
+  "extraClasses": "fa-rotate-0",
+}
+            );
+        
+    
+        var popup_39c01abb414af7010b3cbcc68532548b = L.popup({
+  "maxWidth": "100%",
+});
+
+        
+            
+                var html_8a615b7a911488752625f3e2ddfac027 = $(`<div id="html_8a615b7a911488752625f3e2ddfac027" style="width: 100.0%; height: 100.0%;"><b>Old City 3D Trick Art</b></div>`)[0];
+                popup_39c01abb414af7010b3cbcc68532548b.setContent(html_8a615b7a911488752625f3e2ddfac027);
+            
+        
+
+        marker_91f10bf4d6c6affde0e5828c4e487b2a.bindPopup(popup_39c01abb414af7010b3cbcc68532548b)
+        ;
+
+        
+    
+    
+            marker_91f10bf4d6c6affde0e5828c4e487b2a.bindTooltip(
+                `<div>
+                     Vertex: Old City 3D Trick Art
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+                marker_91f10bf4d6c6affde0e5828c4e487b2a.setIcon(icon_27e8343b75038a4c8976662d88988ecb);
+            
+    
+            var marker_66524bcad73b8bcafc1f16a697a557af = L.marker(
+                [-6.968444, 110.427555],
+                {
+}
+            ).addTo(map_ab8edbc02a4f767329c5443ccffb9a45);
+        
+    
+            var div_icon_f358b67fbc4bb182ac4d37baecb5890a = L.divIcon({
+  "html": "\n            \u003cdiv style=\"\n                font-family: Arial, sans-serif;\n                font-size: 8pt; \n                font-weight: bold;\n                color: #000000;\n                background-color: rgba(255, 255, 255, 0.85);\n                border: 1px solid black;\n                border-radius: 3px;\n                padding: 2px 4px;\n                white-space: nowrap;\n                transform: translate(12px, -12px);\n            \"\u003e\n                Old City 3D Trick Art\n            \u003c/div\u003e\n            ",
+  "className": "empty",
+});
+        
+    
+                marker_66524bcad73b8bcafc1f16a697a557af.setIcon(div_icon_f358b67fbc4bb182ac4d37baecb5890a);
+            
+    
+            var marker_fd850d64f98e108460070713d7861bdc = L.marker(
+                [-7.005555, 110.420666],
+                {
+}
+            ).addTo(map_ab8edbc02a4f767329c5443ccffb9a45);
+        
+    
+            var icon_26e0fb51b6521930ca2c3e16e3ed3fdd = L.AwesomeMarkers.icon(
+                {
+  "markerColor": "blue",
+  "iconColor": "white",
+  "icon": "info-sign",
+  "prefix": "glyphicon",
+  "extraClasses": "fa-rotate-0",
+}
+            );
+        
+    
+        var popup_8784ea35521142ac7613f40c42cc6ca3 = L.popup({
+  "maxWidth": "100%",
+});
+
+        
+            
+                var html_48af971a009d2af721cbb84e0412ed6e = $(`<div id="html_48af971a009d2af721cbb84e0412ed6e" style="width: 100.0%; height: 100.0%;"><b>Pura Agung Giri Natha</b></div>`)[0];
+                popup_8784ea35521142ac7613f40c42cc6ca3.setContent(html_48af971a009d2af721cbb84e0412ed6e);
+            
+        
+
+        marker_fd850d64f98e108460070713d7861bdc.bindPopup(popup_8784ea35521142ac7613f40c42cc6ca3)
+        ;
+
+        
+    
+    
+            marker_fd850d64f98e108460070713d7861bdc.bindTooltip(
+                `<div>
+                     Vertex: Pura Agung Giri Natha
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+                marker_fd850d64f98e108460070713d7861bdc.setIcon(icon_26e0fb51b6521930ca2c3e16e3ed3fdd);
+            
+    
+            var marker_ffba4ca8672574e9851e53033233353a = L.marker(
+                [-7.005555, 110.420666],
+                {
+}
+            ).addTo(map_ab8edbc02a4f767329c5443ccffb9a45);
+        
+    
+            var div_icon_666c1c6c9d24ce563a20b1b91c7e4615 = L.divIcon({
+  "html": "\n            \u003cdiv style=\"\n                font-family: Arial, sans-serif;\n                font-size: 8pt; \n                font-weight: bold;\n                color: #000000;\n                background-color: rgba(255, 255, 255, 0.85);\n                border: 1px solid black;\n                border-radius: 3px;\n                padding: 2px 4px;\n                white-space: nowrap;\n                transform: translate(12px, -12px);\n            \"\u003e\n                Pura Agung Giri Natha\n            \u003c/div\u003e\n            ",
+  "className": "empty",
+});
+        
+    
+                marker_ffba4ca8672574e9851e53033233353a.setIcon(div_icon_666c1c6c9d24ce563a20b1b91c7e4615);
+            
+    
+            var marker_840f17830fc20f0a0e8cb5f29e8acfaf = L.marker(
+                [-7.012666, 110.351777],
+                {
+}
+            ).addTo(map_ab8edbc02a4f767329c5443ccffb9a45);
+        
+    
+            var icon_c03f6c61fd5a4e7fe390f77bdbddacda = L.AwesomeMarkers.icon(
+                {
+  "markerColor": "blue",
+  "iconColor": "white",
+  "icon": "info-sign",
+  "prefix": "glyphicon",
+  "extraClasses": "fa-rotate-0",
+}
+            );
+        
+    
+        var popup_c2ce1f3a87e2fb00664eb9d58761f08a = L.popup({
+  "maxWidth": "100%",
+});
+
+        
+            
+                var html_ec339084dfe819fb4572449a6c22796a = $(`<div id="html_ec339084dfe819fb4572449a6c22796a" style="width: 100.0%; height: 100.0%;"><b>Silayur Park Semarang</b></div>`)[0];
+                popup_c2ce1f3a87e2fb00664eb9d58761f08a.setContent(html_ec339084dfe819fb4572449a6c22796a);
+            
+        
+
+        marker_840f17830fc20f0a0e8cb5f29e8acfaf.bindPopup(popup_c2ce1f3a87e2fb00664eb9d58761f08a)
+        ;
+
+        
+    
+    
+            marker_840f17830fc20f0a0e8cb5f29e8acfaf.bindTooltip(
+                `<div>
+                     Vertex: Silayur Park Semarang
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+                marker_840f17830fc20f0a0e8cb5f29e8acfaf.setIcon(icon_c03f6c61fd5a4e7fe390f77bdbddacda);
+            
+    
+            var marker_13b8c3d61f9d9494b522e52c03d6e238 = L.marker(
+                [-7.012666, 110.351777],
+                {
+}
+            ).addTo(map_ab8edbc02a4f767329c5443ccffb9a45);
+        
+    
+            var div_icon_7d4d95f7feb523c0a8e42ffe19441268 = L.divIcon({
+  "html": "\n            \u003cdiv style=\"\n                font-family: Arial, sans-serif;\n                font-size: 8pt; \n                font-weight: bold;\n                color: #000000;\n                background-color: rgba(255, 255, 255, 0.85);\n                border: 1px solid black;\n                border-radius: 3px;\n                padding: 2px 4px;\n                white-space: nowrap;\n                transform: translate(12px, -12px);\n            \"\u003e\n                Silayur Park Semarang\n            \u003c/div\u003e\n            ",
+  "className": "empty",
+});
+        
+    
+                marker_13b8c3d61f9d9494b522e52c03d6e238.setIcon(div_icon_7d4d95f7feb523c0a8e42ffe19441268);
+            
+    
+            var marker_c49eafa48d8629064f83312cec00ec65 = L.marker(
+                [-6.995777, 110.417888],
+                {
+}
+            ).addTo(map_ab8edbc02a4f767329c5443ccffb9a45);
+        
+    
+            var icon_225bd3048241abe097156369ffd4a57f = L.AwesomeMarkers.icon(
+                {
+  "markerColor": "blue",
+  "iconColor": "white",
+  "icon": "info-sign",
+  "prefix": "glyphicon",
+  "extraClasses": "fa-rotate-0",
+}
+            );
+        
+    
+        var popup_348545cc6c2a099ae90a283b6b8aa986 = L.popup({
+  "maxWidth": "100%",
+});
+
+        
+            
+                var html_7542aaacef598d26bfe4196fda1d97e9 = $(`<div id="html_7542aaacef598d26bfe4196fda1d97e9" style="width: 100.0%; height: 100.0%;"><b>Taman Budaya Raden Saleh</b></div>`)[0];
+                popup_348545cc6c2a099ae90a283b6b8aa986.setContent(html_7542aaacef598d26bfe4196fda1d97e9);
+            
+        
+
+        marker_c49eafa48d8629064f83312cec00ec65.bindPopup(popup_348545cc6c2a099ae90a283b6b8aa986)
+        ;
+
+        
+    
+    
+            marker_c49eafa48d8629064f83312cec00ec65.bindTooltip(
+                `<div>
+                     Vertex: Taman Budaya Raden Saleh
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+                marker_c49eafa48d8629064f83312cec00ec65.setIcon(icon_225bd3048241abe097156369ffd4a57f);
+            
+    
+            var marker_f76d19a3ff087dbec3ed07380b3e2dba = L.marker(
+                [-6.995777, 110.417888],
+                {
+}
+            ).addTo(map_ab8edbc02a4f767329c5443ccffb9a45);
+        
+    
+            var div_icon_c249ea055c150430a6fc295e7ad5fdbe = L.divIcon({
+  "html": "\n            \u003cdiv style=\"\n                font-family: Arial, sans-serif;\n                font-size: 8pt; \n                font-weight: bold;\n                color: #000000;\n                background-color: rgba(255, 255, 255, 0.85);\n                border: 1px solid black;\n                border-radius: 3px;\n                padding: 2px 4px;\n                white-space: nowrap;\n                transform: translate(12px, -12px);\n            \"\u003e\n                Taman Budaya Raden Saleh\n            \u003c/div\u003e\n            ",
+  "className": "empty",
+});
+        
+    
+                marker_f76d19a3ff087dbec3ed07380b3e2dba.setIcon(div_icon_c249ea055c150430a6fc295e7ad5fdbe);
+            
+    
+            var marker_c9a7660aa83b12cac41b948d27fce56b = L.marker(
+                [-6.965888, 110.308999],
+                {
+}
+            ).addTo(map_ab8edbc02a4f767329c5443ccffb9a45);
+        
+    
+            var icon_ce0e2c087f8f71ca18f4e648a744c8d5 = L.AwesomeMarkers.icon(
+                {
+  "markerColor": "blue",
+  "iconColor": "white",
+  "icon": "info-sign",
+  "prefix": "glyphicon",
+  "extraClasses": "fa-rotate-0",
+}
+            );
+        
+    
+        var popup_9e1c9dad092d1ebe4bacbf2a4b04e4cd = L.popup({
+  "maxWidth": "100%",
+});
+
+        
+            
+                var html_bc480912830ee78ff44d2b1af7d10902 = $(`<div id="html_bc480912830ee78ff44d2b1af7d10902" style="width: 100.0%; height: 100.0%;"><b>Semarang Zoo</b></div>`)[0];
+                popup_9e1c9dad092d1ebe4bacbf2a4b04e4cd.setContent(html_bc480912830ee78ff44d2b1af7d10902);
+            
+        
+
+        marker_c9a7660aa83b12cac41b948d27fce56b.bindPopup(popup_9e1c9dad092d1ebe4bacbf2a4b04e4cd)
+        ;
+
+        
+    
+    
+            marker_c9a7660aa83b12cac41b948d27fce56b.bindTooltip(
+                `<div>
+                     Vertex: Semarang Zoo
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+                marker_c9a7660aa83b12cac41b948d27fce56b.setIcon(icon_ce0e2c087f8f71ca18f4e648a744c8d5);
+            
+    
+            var marker_f48fb705b60dab4c2a514ce9e16aca64 = L.marker(
+                [-6.965888, 110.308999],
+                {
+}
+            ).addTo(map_ab8edbc02a4f767329c5443ccffb9a45);
+        
+    
+            var div_icon_f41b49852eea25ab104be445efd8dd7e = L.divIcon({
+  "html": "\n            \u003cdiv style=\"\n                font-family: Arial, sans-serif;\n                font-size: 8pt; \n                font-weight: bold;\n                color: #000000;\n                background-color: rgba(255, 255, 255, 0.85);\n                border: 1px solid black;\n                border-radius: 3px;\n                padding: 2px 4px;\n                white-space: nowrap;\n                transform: translate(12px, -12px);\n            \"\u003e\n                Semarang Zoo\n            \u003c/div\u003e\n            ",
+  "className": "empty",
+});
+        
+    
+                marker_f48fb705b60dab4c2a514ce9e16aca64.setIcon(div_icon_f41b49852eea25ab104be445efd8dd7e);
+            
+    
+            var marker_31e17dce47e973dd7b907d7ebb54c57e = L.marker(
+                [-6.961999, 110.391111],
+                {
+}
+            ).addTo(map_ab8edbc02a4f767329c5443ccffb9a45);
+        
+    
+            var icon_b15285849a36d6002dfce5a239170a38 = L.AwesomeMarkers.icon(
+                {
+  "markerColor": "blue",
+  "iconColor": "white",
+  "icon": "info-sign",
+  "prefix": "glyphicon",
+  "extraClasses": "fa-rotate-0",
+}
+            );
+        
+    
+        var popup_a5896f069fba00c6ccbddc6bb67da19b = L.popup({
+  "maxWidth": "100%",
+});
+
+        
+            
+                var html_0f0eaa6361326a18ae2dda3cf52e159a = $(`<div id="html_0f0eaa6361326a18ae2dda3cf52e159a" style="width: 100.0%; height: 100.0%;"><b>Puri Maerokoco</b></div>`)[0];
+                popup_a5896f069fba00c6ccbddc6bb67da19b.setContent(html_0f0eaa6361326a18ae2dda3cf52e159a);
+            
+        
+
+        marker_31e17dce47e973dd7b907d7ebb54c57e.bindPopup(popup_a5896f069fba00c6ccbddc6bb67da19b)
+        ;
+
+        
+    
+    
+            marker_31e17dce47e973dd7b907d7ebb54c57e.bindTooltip(
+                `<div>
+                     Vertex: Puri Maerokoco
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+                marker_31e17dce47e973dd7b907d7ebb54c57e.setIcon(icon_b15285849a36d6002dfce5a239170a38);
+            
+    
+            var marker_4273fe9d2c16fe4e9102aba5e5e64b8b = L.marker(
+                [-6.961999, 110.391111],
+                {
+}
+            ).addTo(map_ab8edbc02a4f767329c5443ccffb9a45);
+        
+    
+            var div_icon_8c80c5a42aee9887d5bb307413c927c8 = L.divIcon({
+  "html": "\n            \u003cdiv style=\"\n                font-family: Arial, sans-serif;\n                font-size: 8pt; \n                font-weight: bold;\n                color: #000000;\n                background-color: rgba(255, 255, 255, 0.85);\n                border: 1px solid black;\n                border-radius: 3px;\n                padding: 2px 4px;\n                white-space: nowrap;\n                transform: translate(12px, -12px);\n            \"\u003e\n                Puri Maerokoco\n            \u003c/div\u003e\n            ",
+  "className": "empty",
+});
+        
+    
+                marker_4273fe9d2c16fe4e9102aba5e5e64b8b.setIcon(div_icon_8c80c5a42aee9887d5bb307413c927c8);
+            
+    
+            var marker_7a3ef793c1669fe9e511172483dbdfaa = L.marker(
+                [-7.054111, 110.415222],
+                {
+}
+            ).addTo(map_ab8edbc02a4f767329c5443ccffb9a45);
+        
+    
+            var icon_1d7c568aad909b4920695906a5bbfb81 = L.AwesomeMarkers.icon(
+                {
+  "markerColor": "blue",
+  "iconColor": "white",
+  "icon": "info-sign",
+  "prefix": "glyphicon",
+  "extraClasses": "fa-rotate-0",
+}
+            );
+        
+    
+        var popup_fbc3a85a9e32395639b459d2337f26ee = L.popup({
+  "maxWidth": "100%",
+});
+
+        
+            
+                var html_929f76009fb1fcf895db85c7591936d5 = $(`<div id="html_929f76009fb1fcf895db85c7591936d5" style="width: 100.0%; height: 100.0%;"><b>Vihara Buddhagaya</b></div>`)[0];
+                popup_fbc3a85a9e32395639b459d2337f26ee.setContent(html_929f76009fb1fcf895db85c7591936d5);
+            
+        
+
+        marker_7a3ef793c1669fe9e511172483dbdfaa.bindPopup(popup_fbc3a85a9e32395639b459d2337f26ee)
+        ;
+
+        
+    
+    
+            marker_7a3ef793c1669fe9e511172483dbdfaa.bindTooltip(
+                `<div>
+                     Vertex: Vihara Buddhagaya
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+                marker_7a3ef793c1669fe9e511172483dbdfaa.setIcon(icon_1d7c568aad909b4920695906a5bbfb81);
+            
+    
+            var marker_1c305317bdfa0dd8e7009004fe68908a = L.marker(
+                [-7.054111, 110.415222],
+                {
+}
+            ).addTo(map_ab8edbc02a4f767329c5443ccffb9a45);
+        
+    
+            var div_icon_4176a380dd8a9f2c8b6756dbc6dbbf1b = L.divIcon({
+  "html": "\n            \u003cdiv style=\"\n                font-family: Arial, sans-serif;\n                font-size: 8pt; \n                font-weight: bold;\n                color: #000000;\n                background-color: rgba(255, 255, 255, 0.85);\n                border: 1px solid black;\n                border-radius: 3px;\n                padding: 2px 4px;\n                white-space: nowrap;\n                transform: translate(12px, -12px);\n            \"\u003e\n                Vihara Buddhagaya\n            \u003c/div\u003e\n            ",
+  "className": "empty",
+});
+        
+    
+                marker_1c305317bdfa0dd8e7009004fe68908a.setIcon(div_icon_4176a380dd8a9f2c8b6756dbc6dbbf1b);
+            
+    
+            var marker_958cdeeba2620e25f72356104ad7fd24 = L.marker(
+                [-7.045222, 110.465333],
+                {
+}
+            ).addTo(map_ab8edbc02a4f767329c5443ccffb9a45);
+        
+    
+            var icon_20e43587ffda101e58e9773d382b56a4 = L.AwesomeMarkers.icon(
+                {
+  "markerColor": "blue",
+  "iconColor": "white",
+  "icon": "info-sign",
+  "prefix": "glyphicon",
+  "extraClasses": "fa-rotate-0",
+}
+            );
+        
+    
+        var popup_b276140574c393222ddd4781564e6464 = L.popup({
+  "maxWidth": "100%",
+});
+
+        
+            
+                var html_178b8f949401ef0c42c34335f4963039 = $(`<div id="html_178b8f949401ef0c42c34335f4963039" style="width: 100.0%; height: 100.0%;"><b>Dung Tungkul Meteseh</b></div>`)[0];
+                popup_b276140574c393222ddd4781564e6464.setContent(html_178b8f949401ef0c42c34335f4963039);
+            
+        
+
+        marker_958cdeeba2620e25f72356104ad7fd24.bindPopup(popup_b276140574c393222ddd4781564e6464)
+        ;
+
+        
+    
+    
+            marker_958cdeeba2620e25f72356104ad7fd24.bindTooltip(
+                `<div>
+                     Vertex: Dung Tungkul Meteseh
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+                marker_958cdeeba2620e25f72356104ad7fd24.setIcon(icon_20e43587ffda101e58e9773d382b56a4);
+            
+    
+            var marker_bca11692fbf9b30403e2d675c893b789 = L.marker(
+                [-7.045222, 110.465333],
+                {
+}
+            ).addTo(map_ab8edbc02a4f767329c5443ccffb9a45);
+        
+    
+            var div_icon_1cacdb0956e35566fdd42bbb2aa26c88 = L.divIcon({
+  "html": "\n            \u003cdiv style=\"\n                font-family: Arial, sans-serif;\n                font-size: 8pt; \n                font-weight: bold;\n                color: #000000;\n                background-color: rgba(255, 255, 255, 0.85);\n                border: 1px solid black;\n                border-radius: 3px;\n                padding: 2px 4px;\n                white-space: nowrap;\n                transform: translate(12px, -12px);\n            \"\u003e\n                Dung Tungkul Meteseh\n            \u003c/div\u003e\n            ",
+  "className": "empty",
+});
+        
+    
+                marker_bca11692fbf9b30403e2d675c893b789.setIcon(div_icon_1cacdb0956e35566fdd42bbb2aa26c88);
+            
+    
+            var marker_48d909a0ea03c1e99d963824c29fc551 = L.marker(
+                [-7.035333, 110.351444],
+                {
+}
+            ).addTo(map_ab8edbc02a4f767329c5443ccffb9a45);
+        
+    
+            var icon_5f5b5dd472ed8fc6bffe3f11fcaf2a78 = L.AwesomeMarkers.icon(
+                {
+  "markerColor": "blue",
+  "iconColor": "white",
+  "icon": "info-sign",
+  "prefix": "glyphicon",
+  "extraClasses": "fa-rotate-0",
+}
+            );
+        
+    
+        var popup_1160caf0ae2a4e38782bc75b55e57d9f = L.popup({
+  "maxWidth": "100%",
+});
+
+        
+            
+                var html_5b41fe4faac2e4a5994ec81a89d98d2f = $(`<div id="html_5b41fe4faac2e4a5994ec81a89d98d2f" style="width: 100.0%; height: 100.0%;"><b>Waduk Jatibarang</b></div>`)[0];
+                popup_1160caf0ae2a4e38782bc75b55e57d9f.setContent(html_5b41fe4faac2e4a5994ec81a89d98d2f);
+            
+        
+
+        marker_48d909a0ea03c1e99d963824c29fc551.bindPopup(popup_1160caf0ae2a4e38782bc75b55e57d9f)
+        ;
+
+        
+    
+    
+            marker_48d909a0ea03c1e99d963824c29fc551.bindTooltip(
+                `<div>
+                     Vertex: Waduk Jatibarang
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+                marker_48d909a0ea03c1e99d963824c29fc551.setIcon(icon_5f5b5dd472ed8fc6bffe3f11fcaf2a78);
+            
+    
+            var marker_4aeefb3a332697d72f88c46b5da9ec28 = L.marker(
+                [-7.035333, 110.351444],
+                {
+}
+            ).addTo(map_ab8edbc02a4f767329c5443ccffb9a45);
+        
+    
+            var div_icon_29251f92f98f7cd5d44f0c8700650ceb = L.divIcon({
+  "html": "\n            \u003cdiv style=\"\n                font-family: Arial, sans-serif;\n                font-size: 8pt; \n                font-weight: bold;\n                color: #000000;\n                background-color: rgba(255, 255, 255, 0.85);\n                border: 1px solid black;\n                border-radius: 3px;\n                padding: 2px 4px;\n                white-space: nowrap;\n                transform: translate(12px, -12px);\n            \"\u003e\n                Waduk Jatibarang\n            \u003c/div\u003e\n            ",
+  "className": "empty",
+});
+        
+    
+                marker_4aeefb3a332697d72f88c46b5da9ec28.setIcon(div_icon_29251f92f98f7cd5d44f0c8700650ceb);
+            
+    
+            map_ab8edbc02a4f767329c5443ccffb9a45.fitBounds(
+                [[-7.072777, 110.308999], [-6.948512, 110.468666]],
+                {}
+            );
+        
+</script>
+</html>
