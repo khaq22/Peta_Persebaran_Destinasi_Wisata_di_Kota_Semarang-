@@ -1,9 +1,7 @@
 const CACHE_NAME = 'smarttour-cache-v1';
 const urlsToCache = [
-  '/PrototypeSmartTourism_App/',
-  '/PrototypeSmartTourism_App/index.html',
-  // Tambahkan file CSS atau JS utama Anda di sini jika ada, contoh:
-  // '/PrototypeSmartTourism_App/style.css'
+  '/Peta_Persebaran_Destinasi_Wisata_di_Kota_Semarang-/',
+  '/Peta_Persebaran_Destinasi_Wisata_di_Kota_Semarang-/index.html'
 ];
 
 self.addEventListener('install', event => {
