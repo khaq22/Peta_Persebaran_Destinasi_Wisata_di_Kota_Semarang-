@@ -60,7 +60,20 @@
     
     
             <div class="folium-map" id="map_ab8edbc02a4f767329c5443ccffb9a45" ></div>
-        
+
+<script>
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('/PrototypeSmartTourism_App/sw.js')
+        .then(registration => {
+          console.log('ServiceWorker berhasil didaftarkan:', registration.scope);
+        })
+        .catch(error => {
+          console.log('Pendaftaran ServiceWorker gagal:', error);
+        });
+    });
+  }
+</script>
 </body>
 <script>
     
