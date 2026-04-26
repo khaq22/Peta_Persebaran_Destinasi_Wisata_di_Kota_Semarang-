@@ -1,1509 +1,2101 @@
 <!DOCTYPE html>
-<html lang="id">
+<html>
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>SmartTour Semarang - KTI RISE 2026</title>
-  
-  <script src="https://cdn.tailwindcss.com"></script>
-  
-  <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
-  <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
-  
-  <script src="https://unpkg.com/lucide@latest"></script>
-
-  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
-
-  <style>
-    /* Custom Scrollbar Hiding & Animations */
-    @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap');
-    body { font-family: 'Plus Jakarta Sans', sans-serif; }
     
-    .no-scrollbar::-webkit-scrollbar {
-      display: none;
-    }
-    .no-scrollbar {
-      -ms-overflow-style: none;
-      scrollbar-width: none;
-    }
-    @keyframes fade-in {
-      from { opacity: 0; }
-      to { opacity: 1; }
-    }
-    .animate-fade-in {
-      animation: fade-in 0.3s ease-out forwards;
-    }
-  </style>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+    <script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.3/dist/leaflet.js"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Leaflet.awesome-markers/2.0.2/leaflet.awesome-markers.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.3/dist/leaflet.css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="https://netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap-glyphicons.css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.2.0/css/all.min.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Leaflet.awesome-markers/2.0.2/leaflet.awesome-markers.css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/python-visualization/folium/folium/templates/leaflet.awesome.rotate.min.css"/>
+    
+            <meta name="viewport" content="width=device-width,
+                initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+            <style>
+                #map_ab8edbc02a4f767329c5443ccffb9a45 {
+                    position: relative;
+                    width: 100.0%;
+                    height: 100.0%;
+                    left: 0.0%;
+                    top: 0.0%;
+                }
+                .leaflet-container { font-size: 1rem; }
+            </style>
+
+            <style>html, body {
+                width: 100%;
+                height: 100%;
+                margin: 0;
+                padding: 0;
+            }
+            </style>
+
+            <style>#map {
+                position:absolute;
+                top:0;
+                bottom:0;
+                right:0;
+                left:0;
+                }
+            </style>
+
+            <script>
+                L_NO_TOUCH = false;
+                L_DISABLE_3D = false;
+            </script>
+
+        
 </head>
-<body class="bg-slate-900 font-sans">
-  
-  <div id="root"></div>
-
-  <script type="text/babel">
-    const { useState, useEffect, useRef } = React;
+<body>
     
-    // --- WORKAROUND UNTUK LUCIDE ICONS DI BROWSER ---
-    // Mengubah data mentah vanilla Lucide menjadi Komponen React yang stabil
-    const camelCase = (str) => str.replace(/-([a-z])/g, (g) => g[1].toUpperCase());
-
-    const LucideIcon = ({ name, size = 24, className = "", ...props }) => {
-      const iconNode = window.lucide.icons[name];
-      if (!iconNode) return null;
-
-      // Mendukung format struktur array Lucide versi baru dan lama
-      const childrenNodes = Array.isArray(iconNode[0]) ? iconNode : (iconNode[2] || []);
-
-      return (
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          width={size}
-          height={size}
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth={2}
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          className={className}
-          {...props}
-        >
-          {childrenNodes.map(([tag, attrs], index) => {
-            const reactAttrs = {};
-            for (const [key, value] of Object.entries(attrs || {})) {
-              reactAttrs[camelCase(key)] = value;
-            }
-            return React.createElement(tag, { key: index, ...reactAttrs });
-          })}
-        </svg>
-      );
-    };
-
-    // Daftar semua ikon yang digunakan di aplikasi
-    const iconNames = [
-    "Home", "Map", "Heart", "User", "Search", "MapPin", "ChevronLeft", "Navigation2", 
-    "Star", "Clock", "MoreHorizontal", "Mail", "Lock", "EyeOff", "Eye", "Settings", "Bell", "Shield", 
-    "LogOut", "MapPinned", "ArrowRight", "X", "QrCode"
-    ];
-
-    // Generate komponen React secara dinamis
-    const Icons = iconNames.reduce((acc, name) => {
-    acc[name] = (props) => <LucideIcon name={name} {...props} />;
-    return acc;
-    }, {});
-
-    const {
-    Home, Map: MapIcon, Heart, User, Search, MapPin, ChevronLeft, Navigation2, 
-    Star, Clock, MoreHorizontal, Mail, Lock, EyeOff, Eye, Settings, Bell, Shield, 
-    LogOut, MapPinned, ArrowRight, X, QrCode
-    } = Icons;
-    // ------------------------------------------------
-
-
-    // --- Mock Data & Constants ---
-    const MOCK_IMAGES = {
-      kotaLama: "https://images.unsplash.com/photo-1641537900953-e864e263c348?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxjb2xvbmlhbCUyMGhlcml0YWdlJTIwYnVpbGRpbmclMjBzZW1hcmFuZ3xlbnwxfHx8fDE3NzY1NzUxNDJ8MA&ixlib=rb-4.1.0&q=80&w=1080",
-      goaKreo: "https://images.unsplash.com/photo-1610906242739-7a3b50162b0c?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxncmVlbiUyMG5hdHVyZSUyMGxhbmRzY2FwZSUyMGluZG9uZXNpYXxlbnwxfHx8fDE3NzY1NzUxNDN8MA&ixlib=rb-4.1.0&q=80&w=1080",
-      kampungBatik: "https://images.unsplash.com/photo-1738077398088-b56627bd9c3e?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxjb2xvcmZ1bCUyMHZpbGxhZ2UlMjBzdHJlZXQlMjBpbmRvbmVzaWF8ZW58MXx8fHwxNzc2NTc1MTQyfDA&ixlib=rb-4.1.0&q=80&w=1080",
-      foodMarket: "https://images.unsplash.com/photo-1568622998407-0084ebf482b0?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxpbmRvbmVzaWFuJTIwZm9vZCUyMG1hcmtldCUyMG5pZ2h0fGVufDF8fHx8MTc3NjU3NTE0M3ww&ixlib=rb-4.1.0&q=80&w=1080",
-      samPooKong: "https://images.unsplash.com/photo-1702815051457-4e27b7064aac?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxTYW0lMjBQb28lMjBLb25nJTIwU2VtYXJhbmd8ZW58MXx8fHwxNzc2NTc2NzA3fDA&ixlib=rb-4.1.0&q=80&w=1080",
-      lawangSewu: "https://images.unsplash.com/photo-1652100591395-6d512bfaf5bb?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxMYXdhbmclMjBTZXd1JTIwU2VtYXJhbmd8ZW58MXx8fHwxNzc2NTc2NzA3fDA&ixlib=rb-4.1.0&q=80&w=1080",
-      semarangLandmark: "https://images.unsplash.com/photo-1684208824620-adb614d898c2?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxTZW1hcmFuZyUyMGNpdHklMjBsYW5kbWFya3xlbnwxfHx8fDE3NzY1NzY3MDd8MA&ixlib=rb-4.1.0&q=80&w=1080",
-    };
-
-    const DESTINATIONS = [
-      { id: "kota-lama", name: "Kota Lama Semarang", image: MOCK_IMAGES.kotaLama, status: "Ramai", statusColor: "text-rose-500", desc: "Pesona arsitektur kolonial peninggalan masa penjajahan Belanda.", rating: 4.8 },
-      { id: "lawang-sewu", name: "Lawang Sewu", image: MOCK_IMAGES.lawangSewu, status: "Ramai", statusColor: "text-rose-500", desc: "Bangunan bersejarah ikonik di Semarang yang dulunya kantor NIS.", rating: 4.7 },
-      { id: "sam-poo-kong", name: "Sam Poo Kong", image: MOCK_IMAGES.samPooKong, status: "Moderate", statusColor: "text-amber-500", desc: "Kelenteng bersejarah petilasan Laksamana Cheng Ho.", rating: 4.6 },
-      { id: "simpang-lima", name: "Simpang Lima", image: "https://travelspromo.com/wp-content/uploads/2021/04/Lapangan-Simpang-Lima-Semarang.jpg", status: "Ramai", statusColor: "text-rose-500", desc: "Alun-alun pusat kota yang selalu hidup dengan aneka kuliner.", rating: 4.7 },
-      { id: "masjid-agung", name: "Masjid Agung Jawa Tengah", image: "https://images.unsplash.com/photo-1614157196885-b9ddd59e3f23?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxtYXNqaWQlMjBhZ3VuZyUyMGphd2ElMjB0ZW5nYWh8ZW58MXx8fHwxNzc2NjAwNTY5fDA&ixlib=rb-4.1.0&q=80&w=1080", status: "Moderate", statusColor: "text-amber-500", desc: "Masjid megah dengan arsitektur campuran Jawa, Islam, dan Romawi.", rating: 4.9 },
-      { id: "semarang-zoo", name: "Semarang Zoo", image: "https://asset.kompas.com/crops/KxtLWxpx7PagDwd5rwAdPzZ5VqY=/0x0:0x0/1200x800/data/photo/2020/05/08/5eb445b26de55.jpg", status: "Moderate", statusColor: "text-amber-500", desc: "Kebun binatang populer untuk rekreasi keluarga di akhir pekan.", rating: 4.3 },
-      { id: "puri-maerokoco", name: "Puri Maerokoco", image: "https://pesonakota.com/wp-content/uploads/Destinasi-Maerokoco-Semarang.png", status: "Quiet", statusColor: "text-emerald-500", desc: "Taman mini Jawa Tengah yang menampilkan rumah adat dari berbagai daerah.", rating: 4.5 },
-      { id: "taman-lele", name: "Kampung Wisata Taman Lele", image: "https://joglosemar.id/wp-content/uploads/2025/06/taman-lele-semarang.jpg", status: "Quiet", statusColor: "text-emerald-500", desc: "Taman rekreasi keluarga yang asri dan sejuk.", rating: 4.2 },
-      { id: "tinjomoyo", name: "Hutan Wisata Tinjomoyo", image: "https://bob.kemenpar.go.id/wp-content/uploads/2021/05/Hutan-Tinjomoyo-Semarang.png", status: "Quiet", statusColor: "text-emerald-500", desc: "Hutan pinus yang sejuk, cocok untuk bersantai dan hunting foto.", rating: 4.4 },
-      { id: "ranggawarsita", name: "Museum Ranggawarsita", image: "https://nagantour.com/wp-content/uploads/2023/11/Museum-Ranggawarsita.webp", status: "Quiet", statusColor: "text-emerald-500", desc: "Museum terlengkap di Jawa Tengah yang menyimpan berbagai peninggalan sejarah.", rating: 4.6 },
-      { id: "raden-saleh", name: "Taman Budaya Raden Saleh", image: "https://picture.triptrus.com/image/2014/06/taman-budaya-raden-saleh-2.jpeg", status: "Moderate", statusColor: "text-amber-500", desc: "Pusat kegiatan seni dan budaya serta teater di Semarang.", rating: 4.3 },
-      { id: "goa-kreo", name: "Goa Kreo", image: "https://rricoid-assets.obs.ap-southeast-4.myhuaweicloud.com/berita/Semarang/o/1751255897158-WhatsApp_Image_2025-06-25_at_10.05.16/yyabl0ci416fpcs.jpeg", status: "Quiet", statusColor: "text-emerald-500", desc: "Nikmati suasana alam yang sejuk di Goa Kreo dengan kera-kera liarnya.", rating: 4.5 },
-      { id: "waduk-jatibarang", name: "Waduk Jatibarang", image: "https://digitiket.com/data/image/110?group=1&m=181203110521", status: "Moderate", statusColor: "text-amber-500", desc: "Waduk buatan dengan pemandangan indah, sering dikunjungi wisatawan.", rating: 4.4 },
-      { id: "kampung-batik", name: "Kampung Batik Semarang", image: "https://c.inilah.com/reborn/2023/08/1/1204_092801_1892_inilah_com_30c314ab53.jpeg", status: "Moderate", statusColor: "text-amber-500", desc: "Pusat pengrajin batik khas Semarang yang kaya warna.", rating: 4.6 },
-      { id: "kandri", name: "Desa Wisata Kandri", image: "https://assets.kompasiana.com/items/album/2022/03/04/whatsapp-image-2022-02-28-at-18-39-10-62220437e2d60e635d0118f2.jpeg?t=o&v=300", status: "Quiet", statusColor: "text-emerald-500", desc: "Desa wisata dengan alam pedesaan yang khas dan asri.", rating: 4.5 },
-      { id: "kedungpane", name: "Desa Wisata Kedungpane", image: "https://jadesta.kemenpar.go.id/imgpost/75353.jpg", status: "Quiet", statusColor: "text-emerald-500", desc: "Suasana sejuk desa wisata yang memanjakan mata Anda.", rating: 4.2 },
-      { id: "kampung-jawi", name: "Kampung Jawi", image: "https://asset.kompas.com/crops/KI_eFizRMQf04iQ2aBYzl2qqgXU=/0x0:0x0/1200x800/data/photo/2022/08/07/62ef3a362e8d8.jpg", status: "Moderate", statusColor: "text-amber-500", desc: "Nikmati aneka ragam kuliner tradisional Jawa di malam hari.", rating: 4.6 },
-      { id: "pantai-marina", name: "Pantai Marina", image: "https://cnc-magazine.oramiland.com/parenting/images/Pemandangan_Pantai_Marina_instagr.width-800.format-webp.webp", status: "Ramai", statusColor: "text-rose-500", desc: "Pantai populer untuk berjalan santai dan melihat matahari terbenam.", rating: 4.3 },
-      { id: "jungle-toon", name: "Jungle Toon Waterpark", image: "https://www.goersapp.com/blog/wp-content/uploads/2024/06/Jungle-Toon-Waterpark-Semarang-.jpg", status: "Moderate", statusColor: "text-amber-500", desc: "Taman bermain air yang seru untuk liburan bersama keluarga.", rating: 4.4 },
-      { id: "makam-ki-ageng", name: "Makam Ki Ageng Pandanaran", image: "https://direktori.ppid.semarangkota.go.id/wp-content/uploads/2026/01/makam-ki-ageng-pandanaran.webp", status: "Quiet", statusColor: "text-emerald-500", desc: "Wisata religi makam bupati pertama dan pendiri Kota Semarang.", rating: 4.7 },
-      { id: "mandala-bhakti", name: "Museum Perjuangan Mandala Bhakti", image: "https://unnes.ac.id/fisip/wp-content/uploads/sites/10/2023/05/image-10.png", status: "Quiet", statusColor: "text-emerald-500", desc: "Menyimpan koleksi senjata dan diorama sejarah perjuangan bangsa.", rating: 4.5 },
-      { id: "rekor-dunia", name: "Museum Rekor Dunia Indonesia", image: "https://warakngendog.com/wp-content/uploads/2023/05/museum-rekor-dunia-indonesia.png", status: "Moderate", statusColor: "text-amber-500", desc: "Museum MURI yang mencatat rekor-rekor terhebat di Indonesia.", rating: 4.6 },
-      { id: "old-city-3d", name: "Old City 3D Trick Art", image: "https://isbs.dinus.ac.id/wp-content/uploads/sites/2/2018/03/jam-buka-old-city-semarang-1080x506.jpg", status: "Moderate", statusColor: "text-amber-500", desc: "Museum seni tipuan mata 3 dimensi yang unik dan fotogenik.", rating: 4.4 },
-      { id: "buddhagaya", name: "Vihara Buddhagaya (Watugong)", image: "https://i0.wp.com/dcarolina-trans.com/wp-content/uploads/2024/06/322036419_126404376752732_55036967332868447_n.jpeg?fit=1440%2C1800&ssl=1", status: "Quiet", statusColor: "text-emerald-500", desc: "Vihara megah dengan Pagoda Avalokitesvara setinggi 45 meter yang ikonik.", rating: 4.8 },
-      { id: "curug-gondoriyo", name: "Curug Gondoriyo", image: "https://blue.kumparan.com/image/upload/fl_progressive,fl_lossy,c_fill,f_auto,q_auto:best,w_640/v1634025439/01h2vnem2gpdy2bbksmcw2wz75.jpg", status: "Quiet", statusColor: "text-emerald-500", desc: "Air terjun alami yang dihiasi tata lampu warna-warni saat malam.", rating: 4.3 },
-      { id: "silayur-park", name: "Silayur Park", image: "https://image.idntimes.com/post/20221013/fromandroid-f65cedfae48c00403b8b4059adaaa01b.jpg", status: "Moderate", statusColor: "text-amber-500", desc: "Taman wisata alam keluarga dengan beragam wahana menarik.", rating: 4.2 },
-      { id: "dung-tungkul", name: "Dung Tungkul Meteseh", image: "https://madosijateng.com/uploads/202310103030150659-dung.jpg?image=1", status: "Quiet", statusColor: "text-emerald-500", desc: "Wisata alam sungai dan perbukitan hijau yang mempesona.", rating: 4.1 },
-      { id: "firdaus-fatimah", name: "Firdaus Fatimah Zahra", image: "https://cnc-magazine.oramiland.com/parenting/images/C548D84A-FE12-4A53-909F-56BE3F6BB.width-800.format-webp.webp", status: "Moderate", statusColor: "text-amber-500", desc: "Wisata religi replika bangunan-bangunan untuk manasik haji.", rating: 4.7 },
-      { id: "dpong", name: "D'pong Semarang", image: "https://ik.imagekit.io/goodid/gnfi/uploads/articles/large-dpongs-wisata-keluarga-destinasi-wisata-wajib-di-semarang-dengan-berbagai-aktivitas-menarik-ABIZquXhTe.png?tr=w-1200,h-675,fo-center", status: "Quiet", statusColor: "text-emerald-500", desc: "Kawasan rekreasi keluarga dengan pemandangan alam memukau.", rating: 4.3 },
-      { id: "gelanggang-pemuda", name: "Gelanggang Pemuda Manunggal", image: "https://fs.dispora.id/image-uploader/assets/img/product_template/GelanggangRemajaKotamadyaJakartaTimur280.png", status: "Moderate", statusColor: "text-amber-500", desc: "Pusat kegiatan olahraga, pertunjukan, dan acara kepemudaan.", rating: 4.2 },
-      { id: "pura-agung", name: "Pura Agung Giri Natha", image: "https://justdestin.travel.blog/wp-content/uploads/2019/10/pura-giri-natha.jpg?w=800", status: "Quiet", statusColor: "text-emerald-500", desc: "Pura Hindu dengan arsitektur khas Bali megah di atas perbukitan.", rating: 4.6 }
-    ];
-
-    const CATEGORY_MAP = {
-      Heritage: [
-        "kota-lama", "lawang-sewu", "sam-poo-kong", "masjid-agung",
-        "puri-maerokoco", "ranggawarsita", "kampung-batik", "kampung-jawi",
-        "makam-ki-ageng", "mandala-bhakti", "rekor-dunia", "buddhagaya",
-        "firdaus-fatimah", "pura-agung"
-      ],
-      Nature: [
-        "semarang-zoo", "taman-lele", "tinjomoyo", "goa-kreo", "waduk-jatibarang",
-        "kandri", "kedungpane", "pantai-marina", "jungle-toon", "curug-gondoriyo",
-        "silayur-park", "dung-tungkul", "dpong"
-      ],
-      Culinary: [
-        "simpang-lima"
-      ],
-      Art: [
-        "raden-saleh", "old-city-3d", "gelanggang-pemuda"
-      ]
-    };
-
-    const NEARBY_MAPPING = {
-      "lawang-sewu": ["mandala-bhakti", "sam-poo-kong", "simpang-lima"],
-      "mandala-bhakti": ["lawang-sewu", "sam-poo-kong", "simpang-lima"],
-      "simpang-lima": ["raden-saleh", "makam-ki-ageng", "lawang-sewu", "kota-lama"],
-      "raden-saleh": ["simpang-lima", "makam-ki-ageng", "masjid-agung"],
-      "makam-ki-ageng": ["simpang-lima", "raden-saleh", "lawang-sewu"],
-      "gelanggang-pemuda": ["simpang-lima", "raden-saleh"],
-      "kota-lama": ["kampung-batik", "old-city-3d", "simpang-lima", "masjid-agung"],
-      "kampung-batik": ["kota-lama", "old-city-3d", "simpang-lima", "masjid-agung"],
-      "old-city-3d": ["kota-lama", "kampung-batik", "simpang-lima"],
-      "masjid-agung": ["kota-lama", "kampung-batik", "simpang-lima"],
-      "sam-poo-kong": ["lawang-sewu", "mandala-bhakti", "pura-agung"],
-      "puri-maerokoco": ["pantai-marina", "ranggawarsita", "jungle-toon"],
-      "pantai-marina": ["puri-maerokoco", "ranggawarsita", "jungle-toon"],
-      "ranggawarsita": ["puri-maerokoco", "pantai-marina", "sam-poo-kong"],
-      "jungle-toon": ["pantai-marina", "puri-maerokoco"],
-      "pura-agung": ["sam-poo-kong", "lawang-sewu", "tinjomoyo"],
-      "goa-kreo": ["waduk-jatibarang", "kandri", "kampung-jawi"],
-      "waduk-jatibarang": ["goa-kreo", "kandri", "kampung-jawi"],
-      "kandri": ["goa-kreo", "waduk-jatibarang", "kampung-jawi"],
-      "kampung-jawi": ["tinjomoyo", "goa-kreo", "waduk-jatibarang"],
-      "tinjomoyo": ["kampung-jawi", "buddhagaya", "pura-agung"],
-      "buddhagaya": ["rekor-dunia", "tinjomoyo", "dung-tungkul"],
-      "rekor-dunia": ["buddhagaya", "tinjomoyo", "dung-tungkul"],
-      "dung-tungkul": ["rekor-dunia", "buddhagaya"],
-      "semarang-zoo": ["taman-lele", "silayur-park", "firdaus-fatimah"],
-      "taman-lele": ["semarang-zoo", "silayur-park", "kedungpane"],
-      "silayur-park": ["semarang-zoo", "taman-lele", "kedungpane", "curug-gondoriyo"],
-      "kedungpane": ["silayur-park", "taman-lele", "dpong", "curug-gondoriyo"],
-      "curug-gondoriyo": ["kedungpane", "silayur-park", "dpong"],
-      "dpong": ["curug-gondoriyo", "kedungpane", "firdaus-fatimah"],
-      "firdaus-fatimah": ["dpong", "semarang-zoo", "silayur-park"]
-    };
-
-    const DUMMY_UMKM = [
-      {
-        id: 1, name: "Lumpia Mbak Lien", desc: "Lumpia legendaris dengan isian rebung segar dan bumbu khas otentik.",
-        image: "https://file.fin.co.id/uploads/f/f88c3b854e48c5957fa32db01eff3662.jpg",
-        rating: 4.8, reviews: 520, distance: "1.2 km", recommendationItem: "Lumpia Basah Rebung", price: "Rp 15.000", tags: ["Jajanan Tradisional", "Halal", "Buka Malam"]
-      },
-      {
-        id: 2, name: "Batik Semarang 16", desc: "Kain batik tulis bermotif pesisir dengan pesona khas Semarangan.",
-        image: "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjHHnf_aNzT1T2z0HmlPQZ-63JbKtgQuTFWUw82SM44Kx9OF7EBKSx0qnEccs71H2585O8loIZZTEZ7OceqYSYZVUsuFlox0S4CD8V_UT8lMIFaNpdqTB7aricMjQ9UIsabB_dxp_IiUrw/w1200-h630-p-k-no-nu/IMG_20180505_083156.jpg",
-        rating: 4.9, reviews: 150, distance: "3.5 km", recommendationItem: "Kain Batik Motif Asem", price: "Rp 150.000", tags: ["Oleh-Oleh", "Kerajinan", "Lokal"]
-      },
-      {
-        id: 3, name: "Pasar Semawis", desc: "Jajanan pasar dan kuliner malam hari yang sangat meriah di Pecinan.",
-        image: "https://i.ytimg.com/vi/UzT8j_HuriQ/maxresdefault.jpg",
-        rating: 4.7, reviews: 1200, distance: "2.1 km", recommendationItem: "Aneka Sate Seafood", price: "Rp 25.000", tags: ["Kuliner Malam", "Street Food", "Banyak Pilihan"]
-      },
-      {
-        id: 4, name: "Kopi Tarik Klasik", desc: "Minuman kopi tradisional buatan lokal dengan biji kopi pilihan terbaik.",
-        image: "https://images.unsplash.com/photo-1775973990808-7195de3e6718?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxpbmRvbmVzaWFuJTIwbG9jYWwlMjBjb2ZmZWUlMjBzaG9wfGVufDF8fHx8MTc3NjYwMjYyNXww&ixlib=rb-4.1.0&q=80&w=1080",
-        rating: 4.6, reviews: 310, distance: "0.8 km", recommendationItem: "Kopi Tarik Susu", price: "Rp 18.000", tags: ["Tempat Nongkrong", "Kopi Lokal", "Nyaman"]
-      },
-      {
-        id: 5, name: "Bandeng Presto Semarang", desc: "Bandeng presto tulang lunak langsung dari pabrik dan tempat pembuatannya.",
-        image: "https://lh3.googleusercontent.com/p/AF1QipME4ir42916N9wnjNIlQPjAEdV9EmX75G6ZhoXt=s1360-w1360-h1020-rw",
-        rating: 4.8, reviews: 890, distance: "5.0 km", recommendationItem: "Bandeng Presto Vacuum", price: "Rp 85.000", tags: ["Oleh-Oleh Khas", "Ikan Laut", "Halal"]
-      }
-    ];
-
-    // --- Sub-components ---
-    const BottomNavBar = ({ activeTab, onTabChange }) => {
-      const tabsLeft = [
-        { id: "home", icon: Home, label: "Home" },
-        { id: "route", icon: MapPinned, label: "Route" },
-      ];
-      const tabsRight = [
-        { id: "map", icon: MapIcon, label: "Map" },
-        { id: "profile", icon: User, label: "Profile" },
-      ];
-
-      return (
-      <div className="absolute bottom-0 w-full bg-white/90 backdrop-blur-md border-t border-slate-200 px-6 py-4 rounded-t-3xl z-50">
-        <div className="flex justify-between items-center max-w-sm mx-auto relative">
-          
-          {/* Tabs Kiri */}
-          <div className="flex justify-around w-[40%]">
-            {tabsLeft.map((tab) => {
-              const Icon = tab.icon;
-              const isActive = activeTab === tab.id;
-              return (
-                <button
-                  key={tab.id}
-                  onClick={() => onTabChange(tab.id)}
-                  className={`flex flex-col items-center gap-1 transition-colors ${isActive ? "text-blue-600" : "text-slate-400 hover:text-slate-600"}`}
-                >
-                  <Icon size={24} className={isActive ? "fill-blue-500/20" : ""} />
-                  <span className="text-[10px] font-medium">{tab.label}</span>
-                </button>
-              );
-            })}
-          </div>
-
-          {/* Tombol QRIS di Tengah (Floating) */}
-          <button
-            onClick={() => onTabChange('qris')}
-            className="absolute -top-10 left-1/2 transform -translate-x-1/2 w-16 h-16 bg-blue-600 hover:bg-blue-700 rounded-full flex flex-col items-center justify-center text-white shadow-[0_8px_20px_rgba(37,99,235,0.4)] border-[6px] border-slate-50 transition-transform hover:scale-105 active:scale-95 z-50"
-          >
-            <QrCode size={24} />
-            <span className="text-[9px] font-bold mt-0.5 tracking-wider">QRIS</span>
-          </button>
-
-          {/* Tabs Kanan */}
-          <div className="flex justify-around w-[40%]">
-            {tabsRight.map((tab) => {
-              const Icon = tab.icon;
-              const isActive = activeTab === tab.id;
-              return (
-                <button
-                  key={tab.id}
-                  onClick={() => onTabChange(tab.id)}
-                  className={`flex flex-col items-center gap-1 transition-colors ${isActive ? "text-blue-600" : "text-slate-400 hover:text-slate-600"}`}
-                >
-                  <Icon size={24} className={isActive ? "fill-blue-500/20" : ""} />
-                  <span className="text-[10px] font-medium">{tab.label}</span>
-                </button>
-              );
-            })}
-          </div>
-
-        </div>
-      </div>
-    );
-  };
-
-    const LandingScreen = ({ onNavigate }) => {
-      return (
-        <div className="h-full relative flex flex-col bg-slate-900">
-          <img
-            src={MOCK_IMAGES.lawangSewu}
-            className="absolute inset-0 w-full h-full object-cover opacity-60"
-            alt="Lawang Sewu"
-          />
-          <div className="absolute inset-0 bg-gradient-to-t from-slate-900 via-slate-900/60 to-transparent"></div>
-
-          <div className="relative z-10 flex flex-col h-full px-6 pb-12 pt-20">
-            <div className="mt-auto mb-8">
-              <h1 className="text-4xl font-bold text-white mb-4 leading-tight">
-                Discover Historic <br />
-                <span className="text-blue-400">Semarang</span>
-              </h1>
-              <p className="text-slate-300 text-lg leading-relaxed">
-                Explore the beauty of cultural heritage, navigate smart routes, and experience the rich history of Central Java.
-              </p>
-            </div>
-
-            <div className="flex flex-col gap-4">
-              <button
-                onClick={() => onNavigate("signup")}
-                className="w-full bg-blue-600 hover:bg-blue-700 text-white py-4 rounded-2xl font-semibold text-lg transition-colors shadow-lg"
-              >
-                Get Started
-              </button>
-              <button
-                onClick={() => onNavigate("login")}
-                className="w-full bg-white/10 hover:bg-white/20 backdrop-blur-md text-white border border-white/20 py-4 rounded-2xl font-semibold text-lg transition-colors"
-              >
-                Log In
-              </button>
-            </div>
-          </div>
-        </div>
-      );
-    };
-
-    const LoginScreen = ({ onNavigate, onLogin }) => {
-      return (
-        <div className="h-full bg-slate-50 flex flex-col relative">
-          <div className="absolute top-0 w-full h-64">
-            <img
-              src={MOCK_IMAGES.semarangLandmark}
-              className="w-full h-full object-cover opacity-80"
-              alt="Semarang Landmark"
-            />
-            <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-transparent to-slate-50"></div>
-          </div>
-
-          <button
-            onClick={() => onNavigate("landing")}
-            className="absolute top-12 left-5 z-20 w-10 h-10 rounded-full bg-white/30 backdrop-blur-md border border-white/40 flex items-center justify-center text-white shadow-sm hover:bg-white/50 transition-colors"
-          >
-            <ChevronLeft size={24} />
-          </button>
-
-          <div className="relative z-10 mt-40 bg-white flex-1 rounded-t-[40px] px-6 pt-10 pb-8 shadow-[0_-10px_40px_rgba(0,0,0,0.05)] flex flex-col">
-            <h1 className="text-3xl font-bold text-slate-800 mb-2">Welcome Back</h1>
-            <p className="text-slate-500 mb-8">Sign in to continue your journey in Semarang.</p>
-
-            <div className="space-y-5">
-              <div>
-                <label className="text-sm font-medium text-slate-700 mb-1.5 block">Email Address</label>
-                <div className="relative">
-                  <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                    <Mail size={20} className="text-slate-400" />
-                  </div>
-                  <input
-                    type="email"
-                    placeholder="you@example.com"
-                    className="w-full bg-slate-50 border border-slate-200 rounded-2xl py-3.5 pl-11 pr-4 text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
-                  />
-                </div>
-              </div>
-
-              <div>
-                <label className="text-sm font-medium text-slate-700 mb-1.5 block">Password</label>
-                <div className="relative">
-                  <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                    <Lock size={20} className="text-slate-400" />
-                  </div>
-                  <input
-                    type="password"
-                    placeholder="••••••••"
-                    className="w-full bg-slate-50 border border-slate-200 rounded-2xl py-3.5 pl-11 pr-11 text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
-                  />
-                  <div className="absolute inset-y-0 right-0 pr-4 flex items-center cursor-pointer">
-                    <EyeOff size={20} className="text-slate-400 hover:text-slate-600" />
-                  </div>
-                </div>
-                <div className="flex justify-end mt-2">
-                  <button className="text-blue-600 text-sm font-medium">Forgot Password?</button>
-                </div>
-              </div>
-            </div>
-
-            <div className="mt-auto pt-8">
-              <button
-                onClick={onLogin}
-                className="w-full bg-blue-600 hover:bg-blue-700 text-white py-4 rounded-2xl font-semibold text-lg shadow-[0_8px_30px_rgba(37,99,235,0.3)] transition-transform hover:scale-[1.02] active:scale-[0.98]"
-              >
-                Log In
-              </button>
-              <p className="text-center text-slate-500 mt-6 text-sm">
-                Don't have an account?{" "}
-                <button
-                  onClick={() => onNavigate("signup")}
-                  className="text-blue-600 font-semibold hover:underline"
-                >
-                  Sign Up
-                </button>
-              </p>
-            </div>
-          </div>
-        </div>
-      );
-    };
-
-    const SignUpScreen = ({ onNavigate, onLogin }) => {
-      return (
-        <div className="h-full bg-slate-50 flex flex-col relative">
-          <div className="absolute top-0 w-full h-64">
-            <img
-              src={MOCK_IMAGES.samPooKong}
-              className="w-full h-full object-cover opacity-80"
-              alt="Sam Poo Kong"
-            />
-            <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-transparent to-slate-50"></div>
-          </div>
-
-          <button
-            onClick={() => onNavigate("landing")}
-            className="absolute top-12 left-5 z-20 w-10 h-10 rounded-full bg-white/30 backdrop-blur-md border border-white/40 flex items-center justify-center text-white shadow-sm hover:bg-white/50 transition-colors"
-          >
-            <ChevronLeft size={24} />
-          </button>
-
-          <div className="relative z-10 mt-40 bg-white flex-1 rounded-t-[40px] px-6 pt-10 pb-8 shadow-[0_-10px_40px_rgba(0,0,0,0.05)] flex flex-col">
-            <h1 className="text-3xl font-bold text-slate-800 mb-2">Create Account</h1>
-            <p className="text-slate-500 mb-8">Join us and explore the beauty of Semarang.</p>
-
-            <div className="space-y-4">
-              <div>
-                <label className="text-sm font-medium text-slate-700 mb-1.5 block">Full Name</label>
-                <div className="relative">
-                  <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                    <User size={20} className="text-slate-400" />
-                  </div>
-                  <input
-                    type="text"
-                    placeholder="John Doe"
-                    className="w-full bg-slate-50 border border-slate-200 rounded-2xl py-3.5 pl-11 pr-4 text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
-                  />
-                </div>
-              </div>
-
-              <div>
-                <label className="text-sm font-medium text-slate-700 mb-1.5 block">Email Address</label>
-                <div className="relative">
-                  <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                    <Mail size={20} className="text-slate-400" />
-                  </div>
-                  <input
-                    type="email"
-                    placeholder="you@example.com"
-                    className="w-full bg-slate-50 border border-slate-200 rounded-2xl py-3.5 pl-11 pr-4 text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
-                  />
-                </div>
-              </div>
-
-              <div>
-                <label className="text-sm font-medium text-slate-700 mb-1.5 block">Password</label>
-                <div className="relative">
-                  <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                    <Lock size={20} className="text-slate-400" />
-                  </div>
-                  <input
-                    type="password"
-                    placeholder="••••••••"
-                    className="w-full bg-slate-50 border border-slate-200 rounded-2xl py-3.5 pl-11 pr-11 text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
-                  />
-                </div>
-              </div>
-            </div>
-
-            <div className="mt-auto pt-6">
-              <button
-                onClick={onLogin}
-                className="w-full bg-blue-600 hover:bg-blue-700 text-white py-4 rounded-2xl font-semibold text-lg shadow-[0_8px_30px_rgba(37,99,235,0.3)] transition-transform hover:scale-[1.02] active:scale-[0.98]"
-              >
-                Sign Up
-              </button>
-              <p className="text-center text-slate-500 mt-6 text-sm">
-                Already have an account?{" "}
-                <button
-                  onClick={() => onNavigate("login")}
-                  className="text-blue-600 font-semibold hover:underline"
-                >
-                  Log In
-                </button>
-              </p>
-            </div>
-          </div>
-        </div>
-      );
-    };
-
-    const HomeScreen = ({ onNavigateToRoute, onNavigateToDetail, onNavigateToProfile }) => {
-      const [activeCategory, setActiveCategory] = useState("All");
-      const [selectedUMKM, setSelectedUMKM] = useState(null);
-      
-      // --- SIMULASI SMART ROUTE DINAMIS ---
-      const MOCK_ROUTES = [
-        ["Waduk Jatibarang", "Goa Kreo", "Hutan Tinjomoyo", "Curug Gondoriyo"], // Rute sesuai Planner (Default)
-        ["Semarang Zoo", "Puri Maerokoco", "Pantai Marina"], // Rute Alam (Alternatif 1)
-        ["Kota Lama", "Lawang Sewu", "Simpang Lima", "Sam Poo Kong"] // Rute Heritage (Alternatif 2)
-      ];
-      
-      const [smartRoute, setSmartRoute] = useState(MOCK_ROUTES[0]);
-
-      // Rute akan berubah secara acak (berubah-ubah) setiap kali user kembali ke layar Home
-      // untuk memberikan kesan bahwa AI sedang menyusun rute baru secara real-time.
-      useEffect(() => {
-        const randomIndex = Math.floor(Math.random() * MOCK_ROUTES.length);
-        setSmartRoute(MOCK_ROUTES[randomIndex]);
-      }, []);
-      // -------------------------------------
-
-      const carouselRef = useRef(null);
-      const [isCarouselPaused, setIsCarouselPaused] = useState(false);
-
-      useEffect(() => {
-        if (isCarouselPaused) return;
-
-        const interval = setInterval(() => {
-          if (carouselRef.current) {
-            const { scrollLeft, scrollWidth, clientWidth } = carouselRef.current;
-            const itemWidth = 280 + 16;
-            
-            if (scrollLeft + clientWidth >= scrollWidth - 10) {
-              carouselRef.current.scrollTo({ left: 0, behavior: "smooth" });
-            } else {
-              carouselRef.current.scrollTo({ left: scrollLeft + itemWidth, behavior: "smooth" });
-            }
-          }
-        }, 3000);
-
-        return () => clearInterval(interval);
-      }, [isCarouselPaused]);
-
-      const displayedDestinations =
-        activeCategory === "All"
-          ? DESTINATIONS
-          : DESTINATIONS.filter((d) => CATEGORY_MAP[activeCategory]?.includes(d.id));
-
-      return (
-        <div className="h-full overflow-y-auto pb-24 px-5 pt-12 no-scrollbar">
-          {/* Header */}
-          <div className="w-full box-border flex justify-between items-center mb-8">
-            <div className="min-w-0 pr-4">
-              <h1 className="text-2xl font-semibold text-slate-800 mb-2 leading-tight">
-                Assalamualaikum,<br />
-                Juara 1 <span className="text-yellow-500">👋</span>
-              </h1>
-              <p className="text-slate-500 text-sm truncate">
-                Where do you want to go today?
-              </p>
-            </div>
-            <button
-              onClick={onNavigateToProfile}
-              className="w-12 h-12 shrink-0 rounded-full flex items-center justify-center font-bold text-yellow-900 border-2 border-white shadow-sm text-xl relative transition-transform hover:scale-105 active:scale-95"
-              style={{ background: "linear-gradient(135deg, #FDE68A 0%, #F59E0B 50%, #D97706 100%)" }}
-            >
-              <div className="absolute inset-[3px] rounded-full border border-yellow-700/30 flex items-center justify-center">
-                <span style={{ textShadow: "0 1px 1px rgba(255,255,255,0.6)" }}>1</span>
-              </div>
-            </button>
-          </div>
-
-          {/* Smart Route Card - DINAMIS */}
-          <div className="relative overflow-hidden rounded-3xl p-6 mb-8 w-full shadow-md bg-gradient-to-br from-blue-500 via-indigo-500 to-purple-500">
-            <div className="absolute top-0 right-0 w-32 h-32 bg-white/20 rounded-full blur-2xl transform translate-x-10 -translate-y-10"></div>
-            <div className="absolute bottom-0 left-0 w-24 h-24 bg-white/10 rounded-full blur-xl transform -translate-x-5 translate-y-5"></div>
-
-            <h2 className="text-white font-medium text-lg mb-4 relative z-10 flex items-center gap-2">
-              <Navigation2 size={20} className="text-blue-100 fill-blue-100 shrink-0" />{" "}
-              Smart Route for You
-            </h2>
-
-            <div className="flex flex-wrap items-center gap-x-1.5 gap-y-2 text-sm text-blue-50 mb-6 relative z-10 w-full leading-relaxed">
-              <div className="flex items-center gap-1 bg-white/20 backdrop-blur-sm px-2 py-0.5 rounded-full border border-white/30">
-                <MapPin size={12} className="text-white" />
-                <span className="font-medium whitespace-nowrap text-white">Titik Anda</span>
-              </div>
-              <ArrowRight size={14} className="text-blue-200 shrink-0" />
-              
-              {smartRoute.map((stop, index) => (
-                <React.Fragment key={index}>
-                  <span className="font-medium whitespace-normal">{stop}</span>
-                  {index < smartRoute.length - 1 && (
-                    <ArrowRight size={14} className="text-blue-200 shrink-0" />
-                  )}
-                </React.Fragment>
-              ))}
-            </div>
-
-            <button
-              onClick={onNavigateToRoute}
-              className="w-full bg-white/20 hover:bg-white/30 transition backdrop-blur-sm border border-white/20 text-white py-3 rounded-2xl font-medium relative z-10 flex items-center justify-center gap-2 shadow-sm"
-            >
-              View Route Planner <ChevronLeft className="rotate-180" size={18} />
-            </button>
-          </div>
-
-          {/* Categories */}
-          <div className="mb-8">
-            <h3 className="text-slate-800 font-medium text-lg mb-4">Categories</h3>
-            <div className="flex gap-3 overflow-x-auto no-scrollbar pb-2">
-              {["All", "Heritage", "Nature", "Culinary", "Art"].map((cat) => (
-                <button
-                  key={cat}
-                  onClick={() => setActiveCategory(cat)}
-                  className={`px-5 py-2 rounded-full text-sm font-medium whitespace-nowrap transition-colors shadow-sm ${activeCategory === cat ? "bg-blue-600 text-white" : "bg-white text-slate-600 border border-slate-100 hover:bg-slate-50"}`}
-                >
-                  {cat}
-                </button>
-              ))}
-            </div>
-          </div>
-
-          {/* Popular Destinations */}
-          <div className="mb-8">
-            <div className="flex justify-between items-center mb-4">
-              <h3 className="text-slate-800 font-medium text-lg">
-                {activeCategory === "All" ? "31 Destinasi Wisata" : `${displayedDestinations.length} ${activeCategory} Destinations`}
-              </h3>
-              <button className="text-blue-600 text-sm font-medium">View All ></button>
-            </div>
-            <div 
-              ref={carouselRef}
-              onMouseEnter={() => setIsCarouselPaused(true)}
-              onMouseLeave={() => setIsCarouselPaused(false)}
-              onTouchStart={() => setIsCarouselPaused(true)}
-              onTouchEnd={() => setIsCarouselPaused(false)}
-              className="flex gap-4 overflow-x-auto no-scrollbar pb-4 -mx-5 px-5 snap-x snap-mandatory"
-            >
-              {displayedDestinations.map((dest) => (
-                <div
-                  key={dest.id}
-                  onClick={() => onNavigateToDetail(dest.id)}
-                  className="min-w-[280px] snap-center shrink-0 bg-white rounded-3xl overflow-hidden shadow-sm border border-slate-100 cursor-pointer transform transition-transform hover:scale-[1.02]"
-                >
-                  <div className="h-44 w-full relative">
-                    <img src={dest.image} alt={dest.name} className="w-full h-full object-cover" />
-                    <div className="absolute top-3 right-3 bg-white/80 backdrop-blur-md rounded-full p-1.5 shadow-sm">
-                      <Heart size={16} className="text-rose-500" />
-                    </div>
-                  </div>
-                  <div className="p-4">
-                    <h4 className="text-slate-800 font-medium mb-1 truncate">{dest.name}</h4>
-                    <div className="flex items-center gap-1 text-slate-500 text-xs">
-                      <Star size={12} className="text-yellow-400 fill-yellow-400" />
-                      <span>{dest.rating}</span>
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          {/* Nearby UMKM */}
-          <div>
-            <div className="flex justify-between items-center mb-4">
-              <h3 className="text-slate-800 font-medium text-lg">Nearby UMKM</h3>
-              <button className="text-blue-600 text-sm font-medium">View All ></button>
-            </div>
-            <div className="flex gap-4 overflow-x-auto no-scrollbar pb-4 -mx-5 px-5">
-              {DUMMY_UMKM.map((umkm) => (
-                <div
-                  key={umkm.id}
-                  onClick={() => setSelectedUMKM(umkm)}
-                  className="min-w-[160px] max-w-[160px] bg-white rounded-2xl p-2 shadow-sm border border-slate-100 flex flex-col shrink-0 cursor-pointer hover:bg-slate-50 transition-colors"
-                >
-                  <div className="h-24 w-full rounded-xl overflow-hidden mb-2">
-                    <img src={umkm.image} alt={umkm.name} className="w-full h-full object-cover" />
-                  </div>
-                  <div className="px-1 flex-1 flex flex-col">
-                    <h4 className="text-[13px] font-semibold text-slate-800 truncate mb-1">{umkm.name}</h4>
-                    <p className="text-[11px] text-slate-500 line-clamp-2 leading-snug mb-3 flex-1">{umkm.desc}</p>
-                    <div className="flex justify-between mt-auto">
-                      <div className="flex items-center gap-1 bg-slate-50 px-2 py-1 rounded-full">
-                        <Star size={12} className="text-yellow-400 fill-yellow-400" />
-                        <span className="text-[10px] font-medium text-slate-700">{umkm.rating}</span>
-                      </div>
-                      <div className="flex items-center gap-1 bg-slate-50 px-2 py-1 rounded-full">
-                        <MapPin size={10} className="text-blue-500" />
-                        <span className="text-[10px] font-medium text-slate-700">{umkm.distance}</span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          {/* UMKM Modal */}
-          {selectedUMKM && (
-            <div className="absolute inset-0 z-[100] flex items-end sm:items-center justify-center bg-slate-900/50 backdrop-blur-sm p-4 sm:p-0 transition-opacity">
-              <div className="bg-white w-full max-w-md sm:rounded-[24px] rounded-t-[24px] rounded-b-none sm:rounded-b-[24px] overflow-hidden shadow-2xl animate-in slide-in-from-bottom-8 relative">
-                <div className="h-56 w-full relative">
-                  <img src={selectedUMKM.image} alt={selectedUMKM.name} className="w-full h-full object-cover" />
-                  <div className="absolute inset-0 bg-gradient-to-t from-slate-900/60 to-transparent"></div>
-                  <button 
-                    onClick={() => setSelectedUMKM(null)} 
-                    className="absolute top-4 right-4 bg-white/20 hover:bg-white/40 backdrop-blur-md p-2 rounded-full text-white transition"
-                  >
-                    <X size={20} />
-                  </button>
-                  <div className="absolute bottom-4 left-4 right-4">
-                    <h2 className="text-2xl font-bold text-white mb-1">{selectedUMKM.name}</h2>
-                    <div className="flex flex-wrap items-center gap-2 text-sm text-white/90">
-                      <div className="flex items-center gap-1 bg-black/30 backdrop-blur-md px-2 py-1 rounded-full">
-                        <Star size={14} className="text-yellow-400 fill-yellow-400" />
-                        <span className="font-semibold">{selectedUMKM.rating}</span>
-                        <span className="text-white/70 text-xs">({selectedUMKM.reviews})</span>
-                      </div>
-                      <div className="flex items-center gap-1 bg-black/30 backdrop-blur-md px-2 py-1 rounded-full">
-                        <MapPin size={14} className="text-white" />
-                        <span className="text-xs font-medium">{selectedUMKM.distance}</span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                
-                <div className="p-6">
-                  <p className="text-slate-600 text-sm leading-relaxed mb-5">{selectedUMKM.desc}</p>
-                  <div className="bg-blue-50 border border-blue-100 rounded-2xl p-4 mb-5">
-                    <h4 className="text-xs font-bold text-blue-600 uppercase tracking-wider mb-2 flex items-center gap-1.5">
-                      <Heart size={14} className="fill-blue-600" /> Rekomendasi Menu
-                    </h4>
-                    <div className="flex justify-between items-center">
-                      <span className="text-slate-800 font-semibold">{selectedUMKM.recommendationItem}</span>
-                      <span className="text-blue-700 font-bold bg-white px-3 py-1 rounded-full shadow-sm text-sm">
-                        {selectedUMKM.price}
-                      </span>
-                    </div>
-                  </div>
-                  <div className="mb-2">
-                    <h4 className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">Tag</h4>
-                    <div className="flex flex-wrap gap-2">
-                      {selectedUMKM.tags.map((tag) => (
-                        <span key={tag} className="px-3 py-1 bg-slate-100 border border-slate-200 text-slate-600 text-xs font-medium rounded-full">
-                          {tag}
-                        </span>
-                      ))}
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          )}
-        </div>
-      );
-    };
-
-    const RouteScreen = ({ onBack }) => {
-      return (
-        <div className="h-full flex flex-col bg-slate-50 relative pb-20">
-          <div className="absolute top-0 w-full px-5 pt-12 pb-4 bg-white/80 backdrop-blur-md border-b border-slate-200 z-20 shadow-sm flex items-center gap-4">
-            <button
-              onClick={onBack}
-              className="p-2 bg-white/80 backdrop-blur-sm shadow-sm rounded-full text-slate-800 border border-slate-200 hover:bg-white transition-colors"
-            >
-              <ChevronLeft size={24} />
-            </button>
-            <h1 className="text-xl font-semibold text-slate-800">Smart Route Planner</h1>
-          </div>
-          <div className="flex-1 w-full h-full relative z-10 bg-slate-200">
-            <iframe
-              src="https://khaq22.github.io/SmartTourism-Semarang-User/"
-              width="100%"
-              height="100%"
-              style={{ border: 0, paddingTop: "80px" }}
-              loading="lazy"
-              referrerPolicy="no-referrer-when-downgrade"
-            ></iframe>
-          </div>
-        </div>
-      );
-    };
-
-    const MapScreen = () => {
-      return (
-        <div className="h-full flex flex-col bg-slate-50 relative pb-20">
-          <div className="absolute top-0 w-full px-5 pt-12 pb-4 bg-white/80 backdrop-blur-md border-b border-slate-200 z-20 shadow-sm flex items-center justify-between">
-            <h1 className="text-xl font-semibold text-slate-800">Semarang Tourism Map</h1>
-            <button className="p-2 bg-slate-100 rounded-full text-slate-600 hover:bg-slate-200">
-              <Search size={20} />
-            </button>
-          </div>
-          <div className="flex-1 w-full h-full relative z-10 bg-slate-200">
-            <iframe
-              src="https://khaq22.github.io/SmartTourism-Semarang-User/persebaran.html"
-              width="100%"
-              height="100%"
-              style={{ border: 0 }}
-              loading="lazy"
-              referrerPolicy="no-referrer-when-downgrade"
-            ></iframe>
-            <div className="absolute bottom-6 right-5 flex flex-col gap-3">
-              <button className="w-12 h-12 bg-white rounded-full flex items-center justify-center shadow-lg border border-slate-100 text-blue-600 hover:bg-slate-50">
-                <Navigation2 size={24} />
-              </button>
-            </div>
-          </div>
-        </div>
-      );
-    };
-
-    const ProfileScreen = ({ onLogout }) => {
-      const [currentBgIndex, setCurrentBgIndex] = useState(0);
-      const [activeTab, setActiveTab] = useState('settings');
-      
-      // State untuk mengontrol menu utama
-      const [showAccountSettings, setShowAccountSettings] = useState(false);
-      const [showNotifications, setShowNotifications] = useState(false);
-      const [showPrivacy, setShowPrivacy] = useState(false);
-
-      // State khusus untuk interaksi di dalam Privacy & Security
-      const [showChangePassword, setShowChangePassword] = useState(false);
-      const [isLocationEnabled, setIsLocationEnabled] = useState(true);
-      
-      // State untuk toggle mata (Show/Hide Password)
-      const [showCurrentPassword, setShowCurrentPassword] = useState(false);
-      const [showNewPassword, setShowNewPassword] = useState(false);
-
-      // State BARU untuk alur Forgot Password
-      const [showForgotPassword, setShowForgotPassword] = useState(false);
-
-      const VISITED_TRIPS = DESTINATIONS.slice(0, 12).map((dest, index) => ({
-        ...dest,
-        moment: ["2 weeks ago", "Last month", "3 months ago", "4 months ago", "6 months ago", "Last summer", "1 year ago", "1 year ago", "2 years ago", "2 years ago", "3 years ago", "5 years ago"][index]
-      }));
-
-      const MY_REVIEWS = VISITED_TRIPS.slice(0, 8).map((trip, index) => ({
-        ...trip,
-        reviewScore: [5, 4, 5, 5, 4, 5, 5, 5][index],
-        reviewText: [
-          "Tempat yang sangat indah dan asri! Cocok untuk menenangkan pikiran dari hiruk-pikuk kota.",
-          "Akses jalan sudah cukup baik, tapi fasilitas umum perlu ditingkatkan. Pemandangannya luar biasa.",
-          "Selalu suka ke sini! Spot fotonya banyak dan Instagramable banget. Recommended!",
-          "Harga tiket masuk sepadan dengan pengalaman yang didapatkan. Cuacanya juga sejuk.",
-          "Lumayan bagus untuk liburan bersama keluarga, apalagi kalau cuaca sedang cerah.",
-          "Keren! Sejarah tempat ini sangat menarik untuk dipelajari. Guide-nya juga informatif.",
-          "Tidak pernah bosan berkunjung ke sini. Sangat terawat dan bersih.",
-          "Sangat direkomendasikan bagi yang suka petualangan! Tracking sedikit tapi terbayar lunas."
-        ][index]
-      }));
-
-      useEffect(() => {
-        const interval = setInterval(() => {
-          setCurrentBgIndex((prev) => (prev + 1) % DESTINATIONS.length);
-        }, 4000);
-        return () => clearInterval(interval);
-      }, []);
-
-      return (
-        <div className="h-full flex flex-col bg-slate-50 overflow-y-auto no-scrollbar pb-24">
-          <div className="h-48 relative overflow-hidden bg-slate-200">
-            <img
-              key={DESTINATIONS[currentBgIndex]?.id || currentBgIndex}
-              src={DESTINATIONS[currentBgIndex]?.image || MOCK_IMAGES.lawangSewu}
-              className="w-full h-full object-cover animate-fade-in"
-              alt="Profile Banner"
-            />
-            <div className="absolute inset-0 bg-black/20"></div>
-          </div>
-
-          <div className="px-6 relative flex flex-col items-center">
-            <div
-              className="w-24 h-24 rounded-full border-4 border-white shadow-md flex items-center justify-center font-bold text-yellow-900 text-5xl -mt-12 mb-4 relative z-10"
-              style={{ background: "linear-gradient(135deg, #FDE68A 0%, #F59E0B 50%, #D97706 100%)" }}
-            >
-              <div className="absolute inset-2 rounded-full border-[3px] border-yellow-700/30 flex items-center justify-center">
-                <span style={{ textShadow: "0 2px 2px rgba(255,255,255,0.6)" }}>1</span>
-              </div>
-            </div>
-            <h2 className="text-2xl font-bold text-slate-800">Juara 1</h2>
-            <p className="text-slate-500 text-sm mb-6">juara.satu@example.com</p>
-
-            <div className="w-full flex gap-4 mb-8">
-              <div 
-                onClick={() => setActiveTab(activeTab === 'trips' ? 'settings' : 'trips')}
-                className={`flex-1 p-4 rounded-2xl shadow-sm border text-center cursor-pointer transition-colors ${
-                  activeTab === 'trips' ? 'bg-blue-50 border-blue-200 ring-2 ring-blue-500/20' : 'bg-white border-slate-100 hover:bg-slate-50'
-                }`}
-              >
-                <h3 className="text-2xl font-bold text-blue-600 mb-1">12</h3>
-                <p className="text-xs text-slate-500 font-medium uppercase tracking-wider">Trips</p>
-              </div>
-              <div className="flex-1 bg-white p-4 rounded-2xl shadow-sm border border-slate-100 text-center">
-                <h3 className="text-2xl font-bold text-emerald-500 mb-1">4.9</h3>
-                <p className="text-xs text-slate-500 font-medium uppercase tracking-wider">Rating</p>
-              </div>
-              <div 
-                onClick={() => setActiveTab(activeTab === 'reviews' ? 'settings' : 'reviews')}
-                className={`flex-1 p-4 rounded-2xl shadow-sm border text-center cursor-pointer transition-colors ${
-                  activeTab === 'reviews' ? 'bg-amber-50 border-amber-200 ring-2 ring-amber-500/20' : 'bg-white border-slate-100 hover:bg-slate-50'
-                }`}
-              >
-                <h3 className="text-2xl font-bold text-amber-500 mb-1">8</h3>
-                <p className="text-xs text-slate-500 font-medium uppercase tracking-wider">Reviews</p>
-              </div>
-            </div>
-
-            {activeTab === 'trips' ? (
-              <div className="w-full space-y-4 animate-fade-in pb-8">
-                <h3 className="text-lg font-bold text-slate-800 mb-2 text-left">Destinasi yang Pernah Dikunjungi</h3>
-                {VISITED_TRIPS.map((trip) => (
-                  <div key={trip.id} className="w-full flex items-center gap-4 bg-white p-3 rounded-2xl shadow-sm border border-slate-100">
-                    <div className="w-16 h-16 rounded-xl overflow-hidden shrink-0">
-                      <img src={trip.image} alt={trip.name} className="w-full h-full object-cover" />
-                    </div>
-                    <div className="text-left flex-1">
-                      <h4 className="text-slate-800 font-bold line-clamp-1">{trip.name}</h4>
-                      <p className="text-xs text-slate-500 mt-1 flex items-center gap-1">
-                        <MapPin size={12} className="text-blue-500" /> {trip.status}
-                      </p>
-                      <p className="text-xs text-amber-600 font-medium mt-1 italic">{trip.moment}</p>
-                    </div>
-                  </div>
-                ))}
-                <button
-                  onClick={() => setActiveTab('settings')}
-                  className="w-full mt-4 py-3 text-sm text-slate-500 hover:text-slate-700 font-medium bg-slate-100 rounded-xl"
-                >
-                  Kembali ke Pengaturan
-                </button>
-              </div>
-            ) : activeTab === 'reviews' ? (
-              <div className="w-full space-y-4 animate-fade-in pb-8">
-                <h3 className="text-lg font-bold text-slate-800 mb-2 text-left w-full">Ulasan Saya</h3>
-                {MY_REVIEWS.map((review) => (
-                  <div key={`review-${review.id}`} className="w-full bg-white p-4 rounded-2xl shadow-sm border border-slate-100">
-                    <div className="flex items-center gap-3 mb-3">
-                      <div className="w-12 h-12 rounded-xl overflow-hidden shrink-0">
-                        <img src={review.image} alt={review.name} className="w-full h-full object-cover" />
-                      </div>
-                      <div className="text-left flex-1">
-                        <h4 className="text-slate-800 font-bold line-clamp-1">{review.name}</h4>
-                        <div className="flex items-center gap-1 mt-0.5">
-                          {[...Array(5)].map((_, i) => (
-                            <Star key={i} size={12} className={i < review.reviewScore ? "fill-amber-400 text-amber-400" : "fill-slate-200 text-slate-200"} />
-                          ))}
-                        </div>
-                      </div>
-                      <span className="text-xs text-slate-400">{review.moment}</span>
-                    </div>
-                    <p className="text-sm text-slate-600 text-left leading-relaxed">"{review.reviewText}"</p>
-                  </div>
-                ))}
-                <button
-                  onClick={() => setActiveTab('settings')}
-                  className="w-full mt-4 py-3 text-sm text-slate-500 hover:text-slate-700 font-medium bg-slate-100 rounded-xl"
-                >
-                  Kembali ke Pengaturan
-                </button>
-              </div>
-            ) : (
-              <div className="w-full space-y-3 animate-fade-in">
-                
-                {/* ACCOUNT SETTINGS */}
-                <div className="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden transition-all duration-300">
-                  <button 
-                    onClick={() => {
-                      setShowAccountSettings(!showAccountSettings);
-                      setShowNotifications(false);
-                      setShowPrivacy(false);
-                    }}
-                    className="w-full flex items-center gap-4 p-4 hover:bg-slate-50 transition-colors"
-                  >
-                    <div className="w-10 h-10 rounded-full bg-blue-50 flex items-center justify-center text-blue-600">
-                      <Settings size={20} />
-                    </div>
-                    <div className="text-left flex-1">
-                      <h4 className="text-slate-800 font-medium">Account Settings</h4>
-                      <p className="text-xs text-slate-500">Personal information, email</p>
-                    </div>
-                    <ChevronLeft 
-                      size={20} 
-                      className={`text-slate-400 transition-transform duration-300 ${showAccountSettings ? '-rotate-90' : 'rotate-180'}`} 
-                    />
-                  </button>
-
-                  {showAccountSettings && (
-                    <div className="px-4 pb-4 pt-2 border-t border-slate-50 bg-slate-50/30 animate-fade-in">
-                      <div className="space-y-4">
-                        <div>
-                          <label className="text-xs font-semibold text-slate-500 mb-1.5 block uppercase tracking-wider">Full Name</label>
-                          <div className="relative">
-                            <input type="text" defaultValue="Juara 1" className="w-full bg-white border border-slate-200 rounded-xl py-2.5 pl-3 pr-10 text-sm text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all" />
-                            <User size={16} className="absolute right-3 top-3 text-slate-400" />
-                          </div>
-                        </div>
-                        <div>
-                          <label className="text-xs font-semibold text-slate-500 mb-1.5 block uppercase tracking-wider">Email Address</label>
-                          <div className="relative">
-                            <input type="email" defaultValue="juara.satu@example.com" className="w-full bg-white border border-slate-200 rounded-xl py-2.5 pl-3 pr-10 text-sm text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all" />
-                            <Mail size={16} className="absolute right-3 top-3 text-slate-400" />
-                          </div>
-                        </div>
-                        <button className="w-full bg-blue-600 hover:bg-blue-700 text-white py-2.5 rounded-xl text-sm font-semibold shadow-sm transition-colors mt-2">
-                          Save Changes
-                        </button>
-                      </div>
-                    </div>
-                  )}
-                </div>
-
-                {/* NOTIFICATIONS */}
-                <div className="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden transition-all duration-300">
-                  <button 
-                    onClick={() => {
-                      setShowNotifications(!showNotifications);
-                      setShowAccountSettings(false);
-                      setShowPrivacy(false);
-                    }}
-                    className="w-full flex items-center gap-4 p-4 hover:bg-slate-50 transition-colors"
-                  >
-                    <div className="w-10 h-10 rounded-full bg-indigo-50 flex items-center justify-center text-indigo-600">
-                      <Bell size={20} />
-                    </div>
-                    <div className="text-left flex-1">
-                      <h4 className="text-slate-800 font-medium">Notifications</h4>
-                      <p className="text-xs text-slate-500">Alerts, updates</p>
-                    </div>
-                    <ChevronLeft 
-                      size={20} 
-                      className={`text-slate-400 transition-transform duration-300 ${showNotifications ? '-rotate-90' : 'rotate-180'}`} 
-                    />
-                  </button>
-
-                  {showNotifications && (
-                    <div className="px-4 pb-4 pt-2 border-t border-slate-50 bg-slate-50/30 animate-fade-in">
-                      <div className="space-y-3">
-                        <div>
-                          <div className="flex items-center gap-2 mb-2 px-1">
-                            <div className="w-1.5 h-1.5 rounded-full bg-rose-500"></div>
-                            <h5 className="text-[10px] font-bold text-rose-600 uppercase tracking-widest">Alerts</h5>
-                          </div>
-                          <div className="bg-white border border-slate-100 rounded-xl p-3 shadow-sm">
-                            <div className="flex gap-3">
-                              <div className="w-8 h-8 rounded-lg bg-rose-50 flex items-center justify-center text-rose-500 shrink-0">
-                                <MapPin size={16} />
-                              </div>
-                              <div className="flex-1">
-                                <p className="text-xs font-semibold text-slate-800">Kepadatan Tinggi</p>
-                                <p className="text-[11px] text-slate-500 leading-tight">Kota Lama sedang ramai (Ramai). Pertimbangkan rute alternatif.</p>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                        <div>
-                          <div className="flex items-center gap-2 mb-2 px-1">
-                            <div className="w-1.5 h-1.5 rounded-full bg-blue-500"></div>
-                            <h5 className="text-[10px] font-bold text-blue-600 uppercase tracking-widest">Updates</h5>
-                          </div>
-                          <div className="bg-white border border-slate-100 rounded-xl p-3 shadow-sm space-y-2">
-                            <div className="flex gap-3">
-                              <div className="w-8 h-8 rounded-lg bg-blue-50 flex items-center justify-center text-blue-500 shrink-0">
-                                <Navigation2 size={16} />
-                              </div>
-                              <div>
-                                <p className="text-xs font-semibold text-slate-800">Smart Route v2.0</p>
-                                <p className="text-[11px] text-slate-500 leading-tight">Fitur pencarian UMKM sekitar kini lebih akurat!</p>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  )}
-                </div>
-
-                {/* PRIVACY & SECURITY */}
-                <div className="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden transition-all duration-300">
-                  <button 
-                    onClick={() => {
-                      setShowPrivacy(!showPrivacy);
-                      setShowAccountSettings(false);
-                      setShowNotifications(false);
-                    }}
-                    className="w-full flex items-center gap-4 p-4 hover:bg-slate-50 transition-colors"
-                  >
-                    <div className="w-10 h-10 rounded-full bg-purple-50 flex items-center justify-center text-purple-600">
-                      <Shield size={20} />
-                    </div>
-                    <div className="text-left flex-1">
-                      <h4 className="text-slate-800 font-medium">Privacy & Security</h4>
-                      <p className="text-xs text-slate-500">Passwords, data</p>
-                    </div>
-                    <ChevronLeft 
-                      size={20} 
-                      className={`text-slate-400 transition-transform duration-300 ${showPrivacy ? '-rotate-90' : 'rotate-180'}`} 
-                    />
-                  </button>
-
-                  {showPrivacy && (
-                    <div className="px-4 pb-4 pt-2 border-t border-slate-50 bg-slate-50/30 animate-fade-in space-y-3">
-                      
-                      {/* Sub-menu: Change Password dengan Reset Logic */}
-                      <div className="bg-white border border-slate-100 rounded-xl shadow-sm overflow-hidden transition-all duration-300">
-                        <button 
-                          onClick={() => {
-                            setShowChangePassword(!showChangePassword);
-                            setShowForgotPassword(false); // Reset view saat ditutup
-                          }}
-                          className="w-full flex items-center justify-between p-3 hover:bg-slate-50 transition-colors"
-                        >
-                          <div className="flex items-center gap-3">
-                            <div className="w-8 h-8 rounded-lg bg-slate-50 flex items-center justify-center text-slate-600 shrink-0">
-                              <Lock size={16} />
-                            </div>
-                            <span className="text-sm font-medium text-slate-700">Change Password</span>
-                          </div>
-                          <ChevronLeft size={16} className={`text-slate-400 transition-transform duration-300 shrink-0 ${showChangePassword ? '-rotate-90' : 'rotate-180'}`} />
-                        </button>
-                        
-                        {showChangePassword && (
-                          <div className="px-3 pb-4 pt-1 animate-fade-in">
-                            {!showForgotPassword ? (
-                              // Tampilan Normal: Ganti Password
-                              <div className="space-y-4 animate-fade-in">
-                                {/* Input Current Password */}
-                                <div className="space-y-1">
-                                  <div className="flex justify-between items-center mb-1">
-                                    <label className="text-[10px] font-semibold text-slate-500 uppercase tracking-wider">Current Password</label>
-                                    <button 
-                                      onClick={() => setShowForgotPassword(true)}
-                                      className="text-[10px] font-medium text-blue-600 hover:text-blue-700 transition-colors"
-                                    >
-                                      Forgot Password?
-                                    </button>
-                                  </div>
-                                  <div className="relative">
-                                    <input 
-                                      type={showCurrentPassword ? "text" : "password"} 
-                                      placeholder="••••••••" 
-                                      className="w-full bg-slate-50 border border-slate-200 rounded-lg py-2.5 pl-3 pr-10 text-sm focus:outline-none focus:ring-1 focus:ring-blue-500 transition-all" 
-                                    />
-                                    <button 
-                                      onClick={() => setShowCurrentPassword(!showCurrentPassword)}
-                                      className="absolute inset-y-0 right-0 pr-3 flex items-center text-slate-400 hover:text-blue-600 transition-colors"
-                                    >
-                                      {showCurrentPassword ? <Eye size={16} /> : <EyeOff size={16} />}
-                                    </button>
-                                  </div>
-                                </div>
-                                
-                                {/* Input New Password */}
-                                <div className="space-y-1">
-                                  <label className="text-[10px] font-semibold text-slate-500 uppercase tracking-wider">New Password</label>
-                                  <div className="relative">
-                                    <input 
-                                      type={showNewPassword ? "text" : "password"} 
-                                      placeholder="••••••••" 
-                                      className="w-full bg-slate-50 border border-slate-200 rounded-lg py-2.5 pl-3 pr-10 text-sm focus:outline-none focus:ring-1 focus:ring-blue-500 transition-all" 
-                                    />
-                                    <button 
-                                      onClick={() => setShowNewPassword(!showNewPassword)}
-                                      className="absolute inset-y-0 right-0 pr-3 flex items-center text-slate-400 hover:text-blue-600 transition-colors"
-                                    >
-                                      {showNewPassword ? <Eye size={16} /> : <EyeOff size={16} />}
-                                    </button>
-                                  </div>
-                                </div>
-                                
-                                <button className="w-full bg-slate-800 hover:bg-slate-900 text-white py-2.5 rounded-lg text-xs font-semibold transition-colors shadow-sm">
-                                  Update Password
-                                </button>
-                              </div>
-                            ) : (
-                              // Tampilan Lupa Password (Input Email)
-                              <div className="space-y-3 animate-fade-in pt-2">
-                                <p className="text-[11px] text-slate-500 leading-relaxed mb-3">
-                                  Enter your email address to receive a password reset link.
-                                </p>
-                                <div className="space-y-1">
-                                  <label className="text-[10px] font-semibold text-slate-500 uppercase tracking-wider">Email Address</label>
-                                  <div className="relative">
-                                    <input 
-                                      type="email" 
-                                      defaultValue="juara.satu@example.com"
-                                      placeholder="you@example.com" 
-                                      className="w-full bg-slate-50 border border-slate-200 rounded-lg py-2.5 pl-3 pr-10 text-sm focus:outline-none focus:ring-1 focus:ring-blue-500 transition-all" 
-                                    />
-                                    <Mail size={16} className="absolute right-3 top-2.5 text-slate-400" />
-                                  </div>
-                                </div>
-                                
-                                <button className="w-full bg-blue-600 hover:bg-blue-700 text-white py-2.5 rounded-lg text-xs font-semibold transition-colors mt-2 shadow-sm">
-                                  Send Reset Link
-                                </button>
-                                
-                                <button 
-                                  onClick={() => setShowForgotPassword(false)}
-                                  className="w-full text-center py-2 text-xs font-medium text-slate-500 hover:text-slate-700 transition-colors mt-1"
-                                >
-                                  Back to Change Password
-                                </button>
-                              </div>
-                            )}
-                          </div>
-                        )}
-                      </div>
-                      
-                      {/* Sub-menu: Location Services Toggle */}
-                      <div 
-                        onClick={() => setIsLocationEnabled(!isLocationEnabled)}
-                        className="flex items-center justify-between p-3 bg-white border border-slate-100 rounded-xl shadow-sm cursor-pointer hover:bg-slate-50 transition-colors"
-                      >
-                        <div className="flex items-center gap-3">
-                          <div className={`w-8 h-8 rounded-lg flex items-center justify-center shrink-0 transition-colors ${isLocationEnabled ? 'bg-blue-50 text-blue-600' : 'bg-slate-50 text-slate-500'}`}>
-                            <MapPin size={16} />
-                          </div>
-                          <div className="text-left">
-                            <span className="text-sm font-medium text-slate-700 block">Location Services</span>
-                            <span className="text-[10px] text-slate-500 block leading-tight">Required for Smart Route tracking</span>
-                          </div>
-                        </div>
-                        {/* Switch UI */}
-                        <div className={`w-10 h-6 rounded-full relative shrink-0 transition-colors duration-300 ${isLocationEnabled ? 'bg-blue-500' : 'bg-slate-300'}`}>
-                          <div className={`w-4 h-4 bg-white rounded-full absolute top-1 shadow-sm transition-all duration-300 ${isLocationEnabled ? 'left-5' : 'left-1'}`}></div>
-                        </div>
-                      </div>
-
-                      <button className="w-full text-center py-2 text-xs font-semibold text-rose-500 hover:text-rose-600 transition-colors mt-2">
-                        Delete Account
-                      </button>
-                    </div>
-                  )}
-                </div>
-
-                {/* LOG OUT */}
-                <button
-                  onClick={onLogout}
-                  className="w-full flex items-center gap-4 bg-rose-50 p-4 rounded-2xl border border-rose-100 hover:bg-rose-100 transition-colors mt-4"
-                >
-                  <div className="w-10 h-10 rounded-full bg-white flex items-center justify-center text-rose-500 shadow-sm">
-                    <LogOut size={20} />
-                  </div>
-                  <div className="text-left flex-1">
-                    <h4 className="text-rose-600 font-medium">Log Out</h4>
-                  </div>
-                </button>
-
-              </div>
-            )}
-          </div>
-        </div>
-      );
-    };
-
-    const DetailScreen = ({ locationId, onBack, onNavigateToNearby }) => {
-      const [selectedNearby, setSelectedNearby] = useState(null);
-      const destination = DESTINATIONS.find((d) => d.id === locationId) || DESTINATIONS[0];
-      const nearbyIds = NEARBY_MAPPING[destination.id] || ["simpang-lima", "lawang-sewu", "kota-lama"];
-      const nearbyDestinations = DESTINATIONS.filter(d => nearbyIds.includes(d.id));
-
-      return (
-        <div className="h-full bg-slate-50 relative overflow-hidden">
-          <div className="absolute top-0 w-full h-[45%]">
-            <img src={destination.image} alt={destination.name} className="w-full h-full object-cover" />
-            <div className="absolute inset-0 bg-gradient-to-t from-slate-50 via-transparent to-black/30"></div>
-            <div className="absolute top-12 left-5 right-5 flex justify-between z-20">
-              <button onClick={onBack} className="w-10 h-10 rounded-full bg-white/50 backdrop-blur-md border border-white/40 flex items-center justify-center text-slate-900 shadow-sm hover:bg-white/70 transition-colors">
-                <ChevronLeft size={24} />
-              </button>
-              <button className="w-10 h-10 rounded-full bg-white/50 backdrop-blur-md border border-white/40 flex items-center justify-center text-slate-900 shadow-sm hover:bg-white/70 transition-colors">
-                <MoreHorizontal size={24} />
-              </button>
-            </div>
-          </div>
-
-          <div className="absolute top-[40%] w-full h-[60%] bg-white rounded-t-[32px] px-6 pt-8 pb-8 flex flex-col shadow-[0_-10px_40px_rgba(0,0,0,0.08)] z-10 border-t border-slate-100">
-            <div className="w-12 h-1.5 bg-slate-200 rounded-full mx-auto absolute top-3 left-1/2 -translate-x-1/2"></div>
-            <div className="flex-1 overflow-y-auto no-scrollbar pb-24">
-              <div className="mb-4">
-                <h1 className="text-[26px] font-semibold text-slate-900 mb-2 leading-tight">{destination.name}</h1>
-                <div className="flex items-center gap-2 mb-4">
-                  <span className={`w-2.5 h-2.5 rounded-full ${destination.statusColor.replace("text-", "bg-")} animate-pulse`}></span>
-                  <span className={`text-sm font-medium ${destination.statusColor}`}>{destination.status}</span>
-                </div>
-                <p className="text-slate-600 text-[15px] leading-relaxed mb-8">{destination.desc}</p>
-              </div>
-
-              <h3 className="text-slate-800 font-medium text-lg mb-4">Nearby Places</h3>
-              <div className="flex gap-4 overflow-x-auto no-scrollbar pb-2 -mx-6 px-6">
-                {nearbyDestinations.map((nearbyDest) => (
-                  <div
-                    key={nearbyDest.id}
-                    onClick={() => setSelectedNearby(nearbyDest)}
-                    className="min-w-[140px] max-w-[140px] bg-slate-50 rounded-[20px] p-2 border border-slate-100 shadow-sm cursor-pointer hover:bg-slate-100 transition-colors shrink-0"
-                  >
-                    <img src={nearbyDest.image} className="w-full h-[85px] rounded-2xl object-cover mb-2" alt={nearbyDest.name} />
-                    <h4 className="text-sm font-medium text-slate-800 px-1 truncate">{nearbyDest.name}</h4>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            <div className="absolute bottom-6 left-6 right-6">
-              <button className="w-full bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 text-white py-4 rounded-[20px] font-semibold text-[17px] shadow-[0_8px_30px_rgba(79,70,229,0.3)] transition-transform hover:scale-[1.02] active:scale-[0.98]">
-                Add to Trip
-              </button>
-            </div>
-          </div>
-
-          {selectedNearby && (
-            <div className="absolute inset-0 z-[100] flex items-end sm:items-center justify-center bg-slate-900/50 backdrop-blur-sm p-4 sm:p-0 transition-opacity">
-              <div className="bg-white w-full max-w-md sm:rounded-[24px] rounded-t-[24px] rounded-b-none sm:rounded-b-[24px] overflow-hidden shadow-2xl animate-in slide-in-from-bottom-8 relative flex flex-col max-h-[90%]">
-                <div className="h-56 w-full relative shrink-0">
-                  <img src={selectedNearby.image} alt={selectedNearby.name} className="w-full h-full object-cover" />
-                  <div className="absolute inset-0 bg-gradient-to-t from-slate-900/60 to-transparent"></div>
-                  <button onClick={() => setSelectedNearby(null)} className="absolute top-4 right-4 bg-white/20 hover:bg-white/40 backdrop-blur-md p-2 rounded-full text-white transition">
-                    <X size={20} />
-                  </button>
-                  <div className="absolute bottom-4 left-4 right-4">
-                    <h2 className="text-2xl font-bold text-white mb-1">{selectedNearby.name}</h2>
-                    <div className="flex flex-wrap items-center gap-2 text-sm text-white/90">
-                      <div className="flex items-center gap-1 bg-black/30 backdrop-blur-md px-2 py-1 rounded-full">
-                        <Star size={14} className="text-yellow-400 fill-yellow-400" />
-                        <span className="font-semibold">{selectedNearby.rating}</span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                
-                <div className="p-6 overflow-y-auto no-scrollbar">
-                  <div className="bg-blue-50 border border-blue-100 rounded-2xl p-4 mb-4">
-                    <h4 className="text-xs font-bold text-blue-600 uppercase tracking-wider mb-2 flex items-center gap-1.5">
-                      <MapPin size={14} className="fill-blue-600" /> Keterangan Destinasi
-                    </h4>
-                    <p className="text-slate-600 text-sm leading-relaxed">{selectedNearby.desc}</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-          )}
-        </div>
-      );
-    };
-
-    const QrisScreen = () => {
-      const videoRef = useRef(null);
-      const [hasError, setHasError] = useState(false);
-
-      useEffect(() => {
-        let currentStream = null;
-
-        // Fungsi untuk menyalakan kamera
-        const startCamera = async () => {
-          try {
-            // Meminta akses video, diutamakan kamera belakang (environment) kalau di HP
-            const stream = await navigator.mediaDevices.getUserMedia({
-              video: { facingMode: "environment" }
-            });
-            
-            if (videoRef.current) {
-              videoRef.current.srcObject = stream;
-            }
-            currentStream = stream;
-          } catch (err) {
-            console.error("Gagal mengakses kamera:", err);
-            setHasError(true);
-          }
-        };
-
-        startCamera();
-
-        // Cleanup: Matikan kamera saat user pindah ke tab lain (Home/Map/dll)
-        return () => {
-          if (currentStream) {
-            currentStream.getTracks().forEach(track => track.stop());
-          }
-        };
-      }, []);
-
-      return (
-        <div className="h-full flex flex-col bg-slate-900 relative">
-          <div className="absolute inset-0 bg-slate-900 z-0 overflow-hidden">
-            {/* Real Camera Feed */}
-            {hasError ? (
-              <div className="w-full h-full flex flex-col items-center justify-center p-6 text-center">
-                <Shield size={40} className="text-slate-500 mb-3" />
-                <p className="text-slate-400 text-sm">
-                  Kamera tidak dapat diakses.<br/>Pastikan Anda telah memberikan izin kamera pada browser.
-                </p>
-              </div>
-            ) : (
-              <video
-                ref={videoRef}
-                autoPlay
-                playsInline
-                muted
-                className="w-full h-full object-cover opacity-60 mix-blend-luminosity"
-              />
-            )}
-          </div>
-
-          <div className="relative z-10 flex flex-col items-center justify-center h-full px-6 pt-12 pb-24 pointer-events-none">
-            <h2 className="text-white text-xl font-bold mb-8 tracking-wide drop-shadow-md">Scan QRIS</h2>
-            
-            {/* Bingkai Scanner */}
-            <div className="relative w-64 h-64 mb-8">
-              <div className="absolute top-0 left-0 w-12 h-12 border-t-4 border-l-4 border-blue-500 rounded-tl-2xl"></div>
-              <div className="absolute top-0 right-0 w-12 h-12 border-t-4 border-r-4 border-blue-500 rounded-tr-2xl"></div>
-              <div className="absolute bottom-0 left-0 w-12 h-12 border-b-4 border-l-4 border-blue-500 rounded-bl-2xl"></div>
-              <div className="absolute bottom-0 right-0 w-12 h-12 border-b-4 border-r-4 border-blue-500 rounded-br-2xl"></div>
-              
-              {/* Garis Animasi Scanning */}
-              <div className="w-full h-0.5 bg-blue-400 absolute top-1/2 animate-[ping_2.5s_ease-in-out_infinite] shadow-[0_0_15px_rgba(59,130,246,1)]"></div>
-            </div>
-
-            {/* Tombol Upload (pointer-events-auto agar bisa diklik) */}
-            <div className="bg-white/10 backdrop-blur-md p-4 rounded-2xl w-full max-w-sm flex items-center justify-between border border-white/20 cursor-pointer hover:bg-white/20 transition pointer-events-auto">
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 bg-white rounded-full flex items-center justify-center">
-                  <QrCode size={20} className="text-slate-900" />
-                </div>
-                <div>
-                  <p className="text-white font-medium text-sm">Upload dari Galeri</p>
-                </div>
-              </div>
-              <ChevronLeft size={20} className="text-white rotate-180" />
-            </div>
-          </div>
-        </div>
-      );
-    };
-
-    function App() {
-      const [appState, setAppState] = useState("landing");
-      const [activeTab, setActiveTab] = useState("home");
-      const [activeLocation, setActiveLocation] = useState(null);
-
-      const isViewingDetail = activeLocation !== null;
-
-      return (
-        <div className="min-h-screen bg-slate-900 flex items-center justify-center p-2 sm:p-4">
-          <div className="relative w-full max-w-[400px] h-[850px] max-h-[95vh] bg-slate-50 rounded-[35px] sm:rounded-[40px] shadow-[0_20px_50px_rgba(0,0,0,0.5)] overflow-hidden border-[6px] sm:border-[8px] border-slate-800 mx-auto flex flex-col">
-            
-            {appState === "landing" && <LandingScreen onNavigate={setAppState} />}
-            {appState === "login" && <LoginScreen onNavigate={setAppState} onLogin={() => setAppState("main")} />}
-            {appState === "signup" && <SignUpScreen onNavigate={setAppState} onLogin={() => setAppState("main")} />}
-
-            {appState === "main" && (
-              <>
-                <div className={!isViewingDetail && activeTab === "home" ? "h-full" : "hidden"}>
-                  <HomeScreen
-                    onNavigateToRoute={() => setActiveTab("route")}
-                    onNavigateToDetail={(id) => setActiveLocation(id)}
-                    onNavigateToProfile={() => setActiveTab("profile")}
-                  />
-                </div>
-
-                <div className={!isViewingDetail && activeTab === "route" ? "h-full" : "hidden"}>
-                  <RouteScreen onBack={() => setActiveTab("home")} />
-                </div>
-
-                <div className={!isViewingDetail && activeTab === "map" ? "h-full" : "hidden"}>
-                  <MapScreen />
-                </div>
-
-                <div className={!isViewingDetail && activeTab === "profile" ? "h-full" : "hidden"}>
-                  <ProfileScreen
-                    onLogout={() => {
-                      setAppState("landing");
-                      setActiveTab("home");
-                    }}
-                  />
-                </div>
-
-                {/* Layar QRIS yang baru ditambahkan */}
-                <div className={!isViewingDetail && activeTab === "qris" ? "h-full" : "hidden"}>
-                  <QrisScreen />
-                </div>
-
-                {isViewingDetail && (
-                  <DetailScreen
-                    locationId={activeLocation}
-                    onBack={() => setActiveLocation(null)}
-                    onNavigateToNearby={(id) => setActiveLocation(id)}
-                  />
-                )}
-
-                {!isViewingDetail && (
-                  <BottomNavBar activeTab={activeTab} onTabChange={setActiveTab} />
-                )}
-              </>
-            )}
-
-            <div className="absolute bottom-1 left-1/2 -translate-x-1/2 w-32 h-1 bg-slate-200 rounded-full z-[100] pointer-events-none"></div>
-          </div>
-        </div>
-      );
-    }
-
-    const root = ReactDOM.createRoot(document.getElementById('root'));
-    root.render(<App />);
-  </script>
+    
+            <div class="folium-map" id="map_ab8edbc02a4f767329c5443ccffb9a45" ></div>
+        
 </body>
+<script>
+    
+    
+            var map_ab8edbc02a4f767329c5443ccffb9a45 = L.map(
+                "map_ab8edbc02a4f767329c5443ccffb9a45",
+                {
+                    center: [-7.0, 110.39],
+                    crs: L.CRS.EPSG3857,
+                    ...{
+  "maxBounds": [
+[
+-7.15,
+110.25,
+],
+[
+-6.85,
+110.5,
+],
+],
+  "zoom": 12,
+  "zoomControl": true,
+  "preferCanvas": false,
+}
+
+                }
+            );
+
+            
+
+        
+    
+            var tile_layer_b67f31fcbcd72ad9a9ce628eaa3584fc = L.tileLayer(
+                "https://tile.openstreetmap.org/{z}/{x}/{y}.png",
+                {
+  "minZoom": 11,
+  "maxZoom": 19,
+  "maxNativeZoom": 19,
+  "noWrap": false,
+  "attribution": "\u0026copy; \u003ca href=\"https://www.openstreetmap.org/copyright\"\u003eOpenStreetMap\u003c/a\u003e contributors",
+  "subdomains": "abc",
+  "detectRetina": false,
+  "tms": false,
+  "opacity": 1,
+}
+
+            );
+        
+    
+            tile_layer_b67f31fcbcd72ad9a9ce628eaa3584fc.addTo(map_ab8edbc02a4f767329c5443ccffb9a45);
+        
+    
+            var marker_f62ae347161152f70fa9bc6fbe5d20d7 = L.marker(
+                [-6.968265, 110.428453],
+                {
+}
+            ).addTo(map_ab8edbc02a4f767329c5443ccffb9a45);
+        
+    
+            var icon_942e0e7ea5c9191214df521043c7ab95 = L.AwesomeMarkers.icon(
+                {
+  "markerColor": "red",
+  "iconColor": "white",
+  "icon": "star",
+  "prefix": "glyphicon",
+  "extraClasses": "fa-rotate-0",
+}
+            );
+        
+    
+        var popup_632a56a35ce9982ca429fac522bbab55 = L.popup({
+  "maxWidth": "100%",
+});
+
+        
+            
+                var html_0dfc6ca0f7c81caf0248e30d47de0dbb = $(`<div id="html_0dfc6ca0f7c81caf0248e30d47de0dbb" style="width: 100.0%; height: 100.0%;"><b>Kota Lama</b></div>`)[0];
+                popup_632a56a35ce9982ca429fac522bbab55.setContent(html_0dfc6ca0f7c81caf0248e30d47de0dbb);
+            
+        
+
+        marker_f62ae347161152f70fa9bc6fbe5d20d7.bindPopup(popup_632a56a35ce9982ca429fac522bbab55)
+        ;
+
+        
+    
+    
+            marker_f62ae347161152f70fa9bc6fbe5d20d7.bindTooltip(
+                `<div>
+                     Vertex: Kota Lama
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+                marker_f62ae347161152f70fa9bc6fbe5d20d7.setIcon(icon_942e0e7ea5c9191214df521043c7ab95);
+            
+    
+            var marker_ff22c4416ee40527737af15ec0e853cb = L.marker(
+                [-6.968265, 110.428453],
+                {
+}
+            ).addTo(map_ab8edbc02a4f767329c5443ccffb9a45);
+        
+    
+            var div_icon_0f5ae3e2945374133d5db7af44436391 = L.divIcon({
+  "html": "\n            \u003cdiv style=\"\n                font-family: Arial, sans-serif;\n                font-size: 8pt; \n                font-weight: bold;\n                color: #000000;\n                background-color: rgba(255, 255, 255, 0.85);\n                border: 1px solid black;\n                border-radius: 3px;\n                padding: 2px 4px;\n                white-space: nowrap;\n                transform: translate(12px, -12px);\n            \"\u003e\n                Kota Lama\n            \u003c/div\u003e\n            ",
+  "className": "empty",
+});
+        
+    
+                marker_ff22c4416ee40527737af15ec0e853cb.setIcon(div_icon_0f5ae3e2945374133d5db7af44436391);
+            
+    
+            var marker_be903811ba5245a9e89a993febfaab99 = L.marker(
+                [-6.983984, 110.410438],
+                {
+}
+            ).addTo(map_ab8edbc02a4f767329c5443ccffb9a45);
+        
+    
+            var icon_634b5422e1185e53d7c4d373943c53b6 = L.AwesomeMarkers.icon(
+                {
+  "markerColor": "red",
+  "iconColor": "white",
+  "icon": "star",
+  "prefix": "glyphicon",
+  "extraClasses": "fa-rotate-0",
+}
+            );
+        
+    
+        var popup_d8eca18f9322187ed9749cb20ae981e4 = L.popup({
+  "maxWidth": "100%",
+});
+
+        
+            
+                var html_f3cd3a7e407ef58da6caff48e83cb7e9 = $(`<div id="html_f3cd3a7e407ef58da6caff48e83cb7e9" style="width: 100.0%; height: 100.0%;"><b>Lawang Sewu</b></div>`)[0];
+                popup_d8eca18f9322187ed9749cb20ae981e4.setContent(html_f3cd3a7e407ef58da6caff48e83cb7e9);
+            
+        
+
+        marker_be903811ba5245a9e89a993febfaab99.bindPopup(popup_d8eca18f9322187ed9749cb20ae981e4)
+        ;
+
+        
+    
+    
+            marker_be903811ba5245a9e89a993febfaab99.bindTooltip(
+                `<div>
+                     Vertex: Lawang Sewu
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+                marker_be903811ba5245a9e89a993febfaab99.setIcon(icon_634b5422e1185e53d7c4d373943c53b6);
+            
+    
+            var marker_3cd22b2a340fdb584fe2f992cc7a42ed = L.marker(
+                [-6.983984, 110.410438],
+                {
+}
+            ).addTo(map_ab8edbc02a4f767329c5443ccffb9a45);
+        
+    
+            var div_icon_a35a02e99a6c939d48cd4814a23a9da9 = L.divIcon({
+  "html": "\n            \u003cdiv style=\"\n                font-family: Arial, sans-serif;\n                font-size: 8pt; \n                font-weight: bold;\n                color: #000000;\n                background-color: rgba(255, 255, 255, 0.85);\n                border: 1px solid black;\n                border-radius: 3px;\n                padding: 2px 4px;\n                white-space: nowrap;\n                transform: translate(12px, -12px);\n            \"\u003e\n                Lawang Sewu\n            \u003c/div\u003e\n            ",
+  "className": "empty",
+});
+        
+    
+                marker_3cd22b2a340fdb584fe2f992cc7a42ed.setIcon(div_icon_a35a02e99a6c939d48cd4814a23a9da9);
+            
+    
+            var marker_e8561876ec992c069dd72692599e0154 = L.marker(
+                [-6.996316, 110.398032],
+                {
+}
+            ).addTo(map_ab8edbc02a4f767329c5443ccffb9a45);
+        
+    
+            var icon_e8f3bcf99273c839a865a33b78d95bcd = L.AwesomeMarkers.icon(
+                {
+  "markerColor": "red",
+  "iconColor": "white",
+  "icon": "star",
+  "prefix": "glyphicon",
+  "extraClasses": "fa-rotate-0",
+}
+            );
+        
+    
+        var popup_f751bc1f39ff715340d9c18a9d0b826f = L.popup({
+  "maxWidth": "100%",
+});
+
+        
+            
+                var html_b39444070b4d6cc1141b5c9b0222ba55 = $(`<div id="html_b39444070b4d6cc1141b5c9b0222ba55" style="width: 100.0%; height: 100.0%;"><b>Sam Poo Kong</b></div>`)[0];
+                popup_f751bc1f39ff715340d9c18a9d0b826f.setContent(html_b39444070b4d6cc1141b5c9b0222ba55);
+            
+        
+
+        marker_e8561876ec992c069dd72692599e0154.bindPopup(popup_f751bc1f39ff715340d9c18a9d0b826f)
+        ;
+
+        
+    
+    
+            marker_e8561876ec992c069dd72692599e0154.bindTooltip(
+                `<div>
+                     Vertex: Sam Poo Kong
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+                marker_e8561876ec992c069dd72692599e0154.setIcon(icon_e8f3bcf99273c839a865a33b78d95bcd);
+            
+    
+            var marker_306670470a38bd846145b598d2c8c911 = L.marker(
+                [-6.996316, 110.398032],
+                {
+}
+            ).addTo(map_ab8edbc02a4f767329c5443ccffb9a45);
+        
+    
+            var div_icon_ae632db843e7cccd83516c25b0f59adf = L.divIcon({
+  "html": "\n            \u003cdiv style=\"\n                font-family: Arial, sans-serif;\n                font-size: 8pt; \n                font-weight: bold;\n                color: #000000;\n                background-color: rgba(255, 255, 255, 0.85);\n                border: 1px solid black;\n                border-radius: 3px;\n                padding: 2px 4px;\n                white-space: nowrap;\n                transform: translate(12px, -12px);\n            \"\u003e\n                Sam Poo Kong\n            \u003c/div\u003e\n            ",
+  "className": "empty",
+});
+        
+    
+                marker_306670470a38bd846145b598d2c8c911.setIcon(div_icon_ae632db843e7cccd83516c25b0f59adf);
+            
+    
+            var marker_b87321f8f9abbfbb6dd22666cb1ee92e = L.marker(
+                [-7.039234, 110.347312],
+                {
+}
+            ).addTo(map_ab8edbc02a4f767329c5443ccffb9a45);
+        
+    
+            var icon_067b7415c00b3df3c8730d8df28acc01 = L.AwesomeMarkers.icon(
+                {
+  "markerColor": "blue",
+  "iconColor": "white",
+  "icon": "info-sign",
+  "prefix": "glyphicon",
+  "extraClasses": "fa-rotate-0",
+}
+            );
+        
+    
+        var popup_ae777b5f88065ccb672a0759ce4752fd = L.popup({
+  "maxWidth": "100%",
+});
+
+        
+            
+                var html_25e8bf049c51fc015eb55bf9f9087d69 = $(`<div id="html_25e8bf049c51fc015eb55bf9f9087d69" style="width: 100.0%; height: 100.0%;"><b>Goa Kreo</b></div>`)[0];
+                popup_ae777b5f88065ccb672a0759ce4752fd.setContent(html_25e8bf049c51fc015eb55bf9f9087d69);
+            
+        
+
+        marker_b87321f8f9abbfbb6dd22666cb1ee92e.bindPopup(popup_ae777b5f88065ccb672a0759ce4752fd)
+        ;
+
+        
+    
+    
+            marker_b87321f8f9abbfbb6dd22666cb1ee92e.bindTooltip(
+                `<div>
+                     Vertex: Goa Kreo
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+                marker_b87321f8f9abbfbb6dd22666cb1ee92e.setIcon(icon_067b7415c00b3df3c8730d8df28acc01);
+            
+    
+            var marker_b2e7db0c2244ebe1053b32bfef80c33c = L.marker(
+                [-7.039234, 110.347312],
+                {
+}
+            ).addTo(map_ab8edbc02a4f767329c5443ccffb9a45);
+        
+    
+            var div_icon_aa68c767eff11246faa87de77743da66 = L.divIcon({
+  "html": "\n            \u003cdiv style=\"\n                font-family: Arial, sans-serif;\n                font-size: 8pt; \n                font-weight: bold;\n                color: #000000;\n                background-color: rgba(255, 255, 255, 0.85);\n                border: 1px solid black;\n                border-radius: 3px;\n                padding: 2px 4px;\n                white-space: nowrap;\n                transform: translate(12px, -12px);\n            \"\u003e\n                Goa Kreo\n            \u003c/div\u003e\n            ",
+  "className": "empty",
+});
+        
+    
+                marker_b2e7db0c2244ebe1053b32bfef80c33c.setIcon(div_icon_aa68c767eff11246faa87de77743da66);
+            
+    
+            var marker_d819eae5c52efdf495588785972e109d = L.marker(
+                [-6.973741, 110.430046],
+                {
+}
+            ).addTo(map_ab8edbc02a4f767329c5443ccffb9a45);
+        
+    
+            var icon_845260fcd83b39c7b9d0a086777a80ab = L.AwesomeMarkers.icon(
+                {
+  "markerColor": "blue",
+  "iconColor": "white",
+  "icon": "info-sign",
+  "prefix": "glyphicon",
+  "extraClasses": "fa-rotate-0",
+}
+            );
+        
+    
+        var popup_01b0e2d91d8409b41f65169860daad5c = L.popup({
+  "maxWidth": "100%",
+});
+
+        
+            
+                var html_d72db10a545aab19dc62d0c6ca033cee = $(`<div id="html_d72db10a545aab19dc62d0c6ca033cee" style="width: 100.0%; height: 100.0%;"><b>Kampung Batik</b></div>`)[0];
+                popup_01b0e2d91d8409b41f65169860daad5c.setContent(html_d72db10a545aab19dc62d0c6ca033cee);
+            
+        
+
+        marker_d819eae5c52efdf495588785972e109d.bindPopup(popup_01b0e2d91d8409b41f65169860daad5c)
+        ;
+
+        
+    
+    
+            marker_d819eae5c52efdf495588785972e109d.bindTooltip(
+                `<div>
+                     Vertex: Kampung Batik
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+                marker_d819eae5c52efdf495588785972e109d.setIcon(icon_845260fcd83b39c7b9d0a086777a80ab);
+            
+    
+            var marker_ee60820d47469e4be4869428351ff1c2 = L.marker(
+                [-6.973741, 110.430046],
+                {
+}
+            ).addTo(map_ab8edbc02a4f767329c5443ccffb9a45);
+        
+    
+            var div_icon_605bdb57565261cb81942b03d8b0d707 = L.divIcon({
+  "html": "\n            \u003cdiv style=\"\n                font-family: Arial, sans-serif;\n                font-size: 8pt; \n                font-weight: bold;\n                color: #000000;\n                background-color: rgba(255, 255, 255, 0.85);\n                border: 1px solid black;\n                border-radius: 3px;\n                padding: 2px 4px;\n                white-space: nowrap;\n                transform: translate(12px, -12px);\n            \"\u003e\n                Kampung Batik\n            \u003c/div\u003e\n            ",
+  "className": "empty",
+});
+        
+    
+                marker_ee60820d47469e4be4869428351ff1c2.setIcon(div_icon_605bdb57565261cb81942b03d8b0d707);
+            
+    
+            var marker_00d38590421b24324b90eef1570b0f6d = L.marker(
+                [-6.990412, 110.422756],
+                {
+}
+            ).addTo(map_ab8edbc02a4f767329c5443ccffb9a45);
+        
+    
+            var icon_6c3af5e5b698b288ef14108374052150 = L.AwesomeMarkers.icon(
+                {
+  "markerColor": "blue",
+  "iconColor": "white",
+  "icon": "info-sign",
+  "prefix": "glyphicon",
+  "extraClasses": "fa-rotate-0",
+}
+            );
+        
+    
+        var popup_d33d04e82b3780896c74c8682719361f = L.popup({
+  "maxWidth": "100%",
+});
+
+        
+            
+                var html_d12cc37e0e44510776d31066da3c5d50 = $(`<div id="html_d12cc37e0e44510776d31066da3c5d50" style="width: 100.0%; height: 100.0%;"><b>Simpang Lima</b></div>`)[0];
+                popup_d33d04e82b3780896c74c8682719361f.setContent(html_d12cc37e0e44510776d31066da3c5d50);
+            
+        
+
+        marker_00d38590421b24324b90eef1570b0f6d.bindPopup(popup_d33d04e82b3780896c74c8682719361f)
+        ;
+
+        
+    
+    
+            marker_00d38590421b24324b90eef1570b0f6d.bindTooltip(
+                `<div>
+                     Vertex: Simpang Lima
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+                marker_00d38590421b24324b90eef1570b0f6d.setIcon(icon_6c3af5e5b698b288ef14108374052150);
+            
+    
+            var marker_133bee7f6c5132cc05c5fbdbe68ba1f7 = L.marker(
+                [-6.990412, 110.422756],
+                {
+}
+            ).addTo(map_ab8edbc02a4f767329c5443ccffb9a45);
+        
+    
+            var div_icon_5e4bb902e643d75c5898b4db28ffb465 = L.divIcon({
+  "html": "\n            \u003cdiv style=\"\n                font-family: Arial, sans-serif;\n                font-size: 8pt; \n                font-weight: bold;\n                color: #000000;\n                background-color: rgba(255, 255, 255, 0.85);\n                border: 1px solid black;\n                border-radius: 3px;\n                padding: 2px 4px;\n                white-space: nowrap;\n                transform: translate(12px, -12px);\n            \"\u003e\n                Simpang Lima\n            \u003c/div\u003e\n            ",
+  "className": "empty",
+});
+        
+    
+                marker_133bee7f6c5132cc05c5fbdbe68ba1f7.setIcon(div_icon_5e4bb902e643d75c5898b4db28ffb465);
+            
+    
+            var marker_170003f09032a5462136075d171fc915 = L.marker(
+                [-6.948512, 110.389214],
+                {
+}
+            ).addTo(map_ab8edbc02a4f767329c5443ccffb9a45);
+        
+    
+            var icon_170174d04f83de67e9f38e0394139d96 = L.AwesomeMarkers.icon(
+                {
+  "markerColor": "blue",
+  "iconColor": "white",
+  "icon": "info-sign",
+  "prefix": "glyphicon",
+  "extraClasses": "fa-rotate-0",
+}
+            );
+        
+    
+        var popup_70d05e395d59c4bd67ce6dc5624b3e82 = L.popup({
+  "maxWidth": "100%",
+});
+
+        
+            
+                var html_9f5720859eba4a2908461b291996e339 = $(`<div id="html_9f5720859eba4a2908461b291996e339" style="width: 100.0%; height: 100.0%;"><b>Pantai Marina</b></div>`)[0];
+                popup_70d05e395d59c4bd67ce6dc5624b3e82.setContent(html_9f5720859eba4a2908461b291996e339);
+            
+        
+
+        marker_170003f09032a5462136075d171fc915.bindPopup(popup_70d05e395d59c4bd67ce6dc5624b3e82)
+        ;
+
+        
+    
+    
+            marker_170003f09032a5462136075d171fc915.bindTooltip(
+                `<div>
+                     Vertex: Pantai Marina
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+                marker_170003f09032a5462136075d171fc915.setIcon(icon_170174d04f83de67e9f38e0394139d96);
+            
+    
+            var marker_8b13ce7099d9627d0776d4255006c6f8 = L.marker(
+                [-6.948512, 110.389214],
+                {
+}
+            ).addTo(map_ab8edbc02a4f767329c5443ccffb9a45);
+        
+    
+            var div_icon_f4190173257a8a1c88ae3789609d3f1a = L.divIcon({
+  "html": "\n            \u003cdiv style=\"\n                font-family: Arial, sans-serif;\n                font-size: 8pt; \n                font-weight: bold;\n                color: #000000;\n                background-color: rgba(255, 255, 255, 0.85);\n                border: 1px solid black;\n                border-radius: 3px;\n                padding: 2px 4px;\n                white-space: nowrap;\n                transform: translate(12px, -12px);\n            \"\u003e\n                Pantai Marina\n            \u003c/div\u003e\n            ",
+  "className": "empty",
+});
+        
+    
+                marker_8b13ce7099d9627d0776d4255006c6f8.setIcon(div_icon_f4190173257a8a1c88ae3789609d3f1a);
+            
+    
+            var marker_03668a7cb09ecef21a8053a6da9e736a = L.marker(
+                [-7.014022, 110.342111],
+                {
+}
+            ).addTo(map_ab8edbc02a4f767329c5443ccffb9a45);
+        
+    
+            var icon_0ed2c6417722e2cfcd83c5253371546f = L.AwesomeMarkers.icon(
+                {
+  "markerColor": "blue",
+  "iconColor": "white",
+  "icon": "info-sign",
+  "prefix": "glyphicon",
+  "extraClasses": "fa-rotate-0",
+}
+            );
+        
+    
+        var popup_a52b43329c9cecae46fadf0fea85804f = L.popup({
+  "maxWidth": "100%",
+});
+
+        
+            
+                var html_2a7a4cafb90c5ba6fb7bcadb5e11f51d = $(`<div id="html_2a7a4cafb90c5ba6fb7bcadb5e11f51d" style="width: 100.0%; height: 100.0%;"><b>Curug Gondoriyo</b></div>`)[0];
+                popup_a52b43329c9cecae46fadf0fea85804f.setContent(html_2a7a4cafb90c5ba6fb7bcadb5e11f51d);
+            
+        
+
+        marker_03668a7cb09ecef21a8053a6da9e736a.bindPopup(popup_a52b43329c9cecae46fadf0fea85804f)
+        ;
+
+        
+    
+    
+            marker_03668a7cb09ecef21a8053a6da9e736a.bindTooltip(
+                `<div>
+                     Vertex: Curug Gondoriyo
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+                marker_03668a7cb09ecef21a8053a6da9e736a.setIcon(icon_0ed2c6417722e2cfcd83c5253371546f);
+            
+    
+            var marker_cd5fadcdb35e96ed8a248933c22240b7 = L.marker(
+                [-7.014022, 110.342111],
+                {
+}
+            ).addTo(map_ab8edbc02a4f767329c5443ccffb9a45);
+        
+    
+            var div_icon_2a098c237da3624d4c15f3b669da11d4 = L.divIcon({
+  "html": "\n            \u003cdiv style=\"\n                font-family: Arial, sans-serif;\n                font-size: 8pt; \n                font-weight: bold;\n                color: #000000;\n                background-color: rgba(255, 255, 255, 0.85);\n                border: 1px solid black;\n                border-radius: 3px;\n                padding: 2px 4px;\n                white-space: nowrap;\n                transform: translate(12px, -12px);\n            \"\u003e\n                Curug Gondoriyo\n            \u003c/div\u003e\n            ",
+  "className": "empty",
+});
+        
+    
+                marker_cd5fadcdb35e96ed8a248933c22240b7.setIcon(div_icon_2a098c237da3624d4c15f3b669da11d4);
+            
+    
+            var marker_9306385cc835b8d8781669dc6ec18037 = L.marker(
+                [-7.033145, 110.354222],
+                {
+}
+            ).addTo(map_ab8edbc02a4f767329c5443ccffb9a45);
+        
+    
+            var icon_3e90f6e7e6735776b8b34e2f2c7f3d63 = L.AwesomeMarkers.icon(
+                {
+  "markerColor": "blue",
+  "iconColor": "white",
+  "icon": "info-sign",
+  "prefix": "glyphicon",
+  "extraClasses": "fa-rotate-0",
+}
+            );
+        
+    
+        var popup_9bf984779ee9b210ad3517ac79a030b6 = L.popup({
+  "maxWidth": "100%",
+});
+
+        
+            
+                var html_8a0471227068ca5010bbb730299f156d = $(`<div id="html_8a0471227068ca5010bbb730299f156d" style="width: 100.0%; height: 100.0%;"><b>Desa Wisata Kandri</b></div>`)[0];
+                popup_9bf984779ee9b210ad3517ac79a030b6.setContent(html_8a0471227068ca5010bbb730299f156d);
+            
+        
+
+        marker_9306385cc835b8d8781669dc6ec18037.bindPopup(popup_9bf984779ee9b210ad3517ac79a030b6)
+        ;
+
+        
+    
+    
+            marker_9306385cc835b8d8781669dc6ec18037.bindTooltip(
+                `<div>
+                     Vertex: Desa Wisata Kandri
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+                marker_9306385cc835b8d8781669dc6ec18037.setIcon(icon_3e90f6e7e6735776b8b34e2f2c7f3d63);
+            
+    
+            var marker_6d03a88faddbefdb1212c571bb95107f = L.marker(
+                [-7.033145, 110.354222],
+                {
+}
+            ).addTo(map_ab8edbc02a4f767329c5443ccffb9a45);
+        
+    
+            var div_icon_7ca57297132258b94cc66fc50753dbc4 = L.divIcon({
+  "html": "\n            \u003cdiv style=\"\n                font-family: Arial, sans-serif;\n                font-size: 8pt; \n                font-weight: bold;\n                color: #000000;\n                background-color: rgba(255, 255, 255, 0.85);\n                border: 1px solid black;\n                border-radius: 3px;\n                padding: 2px 4px;\n                white-space: nowrap;\n                transform: translate(12px, -12px);\n            \"\u003e\n                Desa Wisata Kandri\n            \u003c/div\u003e\n            ",
+  "className": "empty",
+});
+        
+    
+                marker_6d03a88faddbefdb1212c571bb95107f.setIcon(div_icon_7ca57297132258b94cc66fc50753dbc4);
+            
+    
+            var marker_c26e166f8d867aa79b246abd086819b2 = L.marker(
+                [-7.018333, 110.334444],
+                {
+}
+            ).addTo(map_ab8edbc02a4f767329c5443ccffb9a45);
+        
+    
+            var icon_bec2cf926dec19ecdd89c11ec3c6ab44 = L.AwesomeMarkers.icon(
+                {
+  "markerColor": "blue",
+  "iconColor": "white",
+  "icon": "info-sign",
+  "prefix": "glyphicon",
+  "extraClasses": "fa-rotate-0",
+}
+            );
+        
+    
+        var popup_63488ef20e8cbcc54bddaf6b32d7eafd = L.popup({
+  "maxWidth": "100%",
+});
+
+        
+            
+                var html_e9c7c119fb885bc4b85b58d60bf0cecd = $(`<div id="html_e9c7c119fb885bc4b85b58d60bf0cecd" style="width: 100.0%; height: 100.0%;"><b>Desa Wisata Kedungpane</b></div>`)[0];
+                popup_63488ef20e8cbcc54bddaf6b32d7eafd.setContent(html_e9c7c119fb885bc4b85b58d60bf0cecd);
+            
+        
+
+        marker_c26e166f8d867aa79b246abd086819b2.bindPopup(popup_63488ef20e8cbcc54bddaf6b32d7eafd)
+        ;
+
+        
+    
+    
+            marker_c26e166f8d867aa79b246abd086819b2.bindTooltip(
+                `<div>
+                     Vertex: Desa Wisata Kedungpane
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+                marker_c26e166f8d867aa79b246abd086819b2.setIcon(icon_bec2cf926dec19ecdd89c11ec3c6ab44);
+            
+    
+            var marker_b69f17b1d266ff082fd6e82218d59468 = L.marker(
+                [-7.018333, 110.334444],
+                {
+}
+            ).addTo(map_ab8edbc02a4f767329c5443ccffb9a45);
+        
+    
+            var div_icon_4c3fab59e121c6104e359725c449cfca = L.divIcon({
+  "html": "\n            \u003cdiv style=\"\n                font-family: Arial, sans-serif;\n                font-size: 8pt; \n                font-weight: bold;\n                color: #000000;\n                background-color: rgba(255, 255, 255, 0.85);\n                border: 1px solid black;\n                border-radius: 3px;\n                padding: 2px 4px;\n                white-space: nowrap;\n                transform: translate(12px, -12px);\n            \"\u003e\n                Desa Wisata Kedungpane\n            \u003c/div\u003e\n            ",
+  "className": "empty",
+});
+        
+    
+                marker_b69f17b1d266ff082fd6e82218d59468.setIcon(div_icon_4c3fab59e121c6104e359725c449cfca);
+            
+    
+            var marker_e6f034bed346b3b53a63f3bd356e87c3 = L.marker(
+                [-7.001555, 110.468666],
+                {
+}
+            ).addTo(map_ab8edbc02a4f767329c5443ccffb9a45);
+        
+    
+            var icon_361e6b05cc9e7022bcab095d07c12fe8 = L.AwesomeMarkers.icon(
+                {
+  "markerColor": "blue",
+  "iconColor": "white",
+  "icon": "info-sign",
+  "prefix": "glyphicon",
+  "extraClasses": "fa-rotate-0",
+}
+            );
+        
+    
+        var popup_047c856e07cba0477f35a8368c7e7c29 = L.popup({
+  "maxWidth": "100%",
+});
+
+        
+            
+                var html_19890665d7130751b5eacd89545fb210 = $(`<div id="html_19890665d7130751b5eacd89545fb210" style="width: 100.0%; height: 100.0%;"><b>Gelanggang Pemuda Manunggal</b></div>`)[0];
+                popup_047c856e07cba0477f35a8368c7e7c29.setContent(html_19890665d7130751b5eacd89545fb210);
+            
+        
+
+        marker_e6f034bed346b3b53a63f3bd356e87c3.bindPopup(popup_047c856e07cba0477f35a8368c7e7c29)
+        ;
+
+        
+    
+    
+            marker_e6f034bed346b3b53a63f3bd356e87c3.bindTooltip(
+                `<div>
+                     Vertex: Gelanggang Pemuda Manunggal
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+                marker_e6f034bed346b3b53a63f3bd356e87c3.setIcon(icon_361e6b05cc9e7022bcab095d07c12fe8);
+            
+    
+            var marker_1955ff40f99499659a6c04a23f73319e = L.marker(
+                [-7.001555, 110.468666],
+                {
+}
+            ).addTo(map_ab8edbc02a4f767329c5443ccffb9a45);
+        
+    
+            var div_icon_370f3b48901fd4e3d18e03b3f6fc81af = L.divIcon({
+  "html": "\n            \u003cdiv style=\"\n                font-family: Arial, sans-serif;\n                font-size: 8pt; \n                font-weight: bold;\n                color: #000000;\n                background-color: rgba(255, 255, 255, 0.85);\n                border: 1px solid black;\n                border-radius: 3px;\n                padding: 2px 4px;\n                white-space: nowrap;\n                transform: translate(12px, -12px);\n            \"\u003e\n                Gelanggang Pemuda Manunggal\n            \u003c/div\u003e\n            ",
+  "className": "empty",
+});
+        
+    
+                marker_1955ff40f99499659a6c04a23f73319e.setIcon(div_icon_370f3b48901fd4e3d18e03b3f6fc81af);
+            
+    
+            var marker_500b03cd948202426bd64395db7423e4 = L.marker(
+                [-7.072777, 110.375888],
+                {
+}
+            ).addTo(map_ab8edbc02a4f767329c5443ccffb9a45);
+        
+    
+            var icon_62ff092dbf749242a5c475265263dd42 = L.AwesomeMarkers.icon(
+                {
+  "markerColor": "blue",
+  "iconColor": "white",
+  "icon": "info-sign",
+  "prefix": "glyphicon",
+  "extraClasses": "fa-rotate-0",
+}
+            );
+        
+    
+        var popup_63d308933b33801a5255eb82225dd23b = L.popup({
+  "maxWidth": "100%",
+});
+
+        
+            
+                var html_726001f572d9a06a397cb0887bc5a4c9 = $(`<div id="html_726001f572d9a06a397cb0887bc5a4c9" style="width: 100.0%; height: 100.0%;"><b>Firdaus Fatimah Zahra</b></div>`)[0];
+                popup_63d308933b33801a5255eb82225dd23b.setContent(html_726001f572d9a06a397cb0887bc5a4c9);
+            
+        
+
+        marker_500b03cd948202426bd64395db7423e4.bindPopup(popup_63d308933b33801a5255eb82225dd23b)
+        ;
+
+        
+    
+    
+            marker_500b03cd948202426bd64395db7423e4.bindTooltip(
+                `<div>
+                     Vertex: Firdaus Fatimah Zahra
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+                marker_500b03cd948202426bd64395db7423e4.setIcon(icon_62ff092dbf749242a5c475265263dd42);
+            
+    
+            var marker_7ec88f00764af82b53449f420ee52367 = L.marker(
+                [-7.072777, 110.375888],
+                {
+}
+            ).addTo(map_ab8edbc02a4f767329c5443ccffb9a45);
+        
+    
+            var div_icon_dc251f0c8831fb2c60578b59beeaf5e2 = L.divIcon({
+  "html": "\n            \u003cdiv style=\"\n                font-family: Arial, sans-serif;\n                font-size: 8pt; \n                font-weight: bold;\n                color: #000000;\n                background-color: rgba(255, 255, 255, 0.85);\n                border: 1px solid black;\n                border-radius: 3px;\n                padding: 2px 4px;\n                white-space: nowrap;\n                transform: translate(12px, -12px);\n            \"\u003e\n                Firdaus Fatimah Zahra\n            \u003c/div\u003e\n            ",
+  "className": "empty",
+});
+        
+    
+                marker_7ec88f00764af82b53449f420ee52367.setIcon(div_icon_dc251f0c8831fb2c60578b59beeaf5e2);
+            
+    
+            var marker_b17b8ea65df5e99a50665fa418a0f010 = L.marker(
+                [-7.067111, 110.370222],
+                {
+}
+            ).addTo(map_ab8edbc02a4f767329c5443ccffb9a45);
+        
+    
+            var icon_dc709ff34d5d36cc60fbd0a862864223 = L.AwesomeMarkers.icon(
+                {
+  "markerColor": "blue",
+  "iconColor": "white",
+  "icon": "info-sign",
+  "prefix": "glyphicon",
+  "extraClasses": "fa-rotate-0",
+}
+            );
+        
+    
+        var popup_471a21cede1affe887e7717e21e342f4 = L.popup({
+  "maxWidth": "100%",
+});
+
+        
+            
+                var html_630e02bb0282eebdf2ba75c88fee5ce3 = $(`<div id="html_630e02bb0282eebdf2ba75c88fee5ce3" style="width: 100.0%; height: 100.0%;"><b>D'pong Semarang</b></div>`)[0];
+                popup_471a21cede1affe887e7717e21e342f4.setContent(html_630e02bb0282eebdf2ba75c88fee5ce3);
+            
+        
+
+        marker_b17b8ea65df5e99a50665fa418a0f010.bindPopup(popup_471a21cede1affe887e7717e21e342f4)
+        ;
+
+        
+    
+    
+            marker_b17b8ea65df5e99a50665fa418a0f010.bindTooltip(
+                `<div>
+                     Vertex: D'pong Semarang
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+                marker_b17b8ea65df5e99a50665fa418a0f010.setIcon(icon_dc709ff34d5d36cc60fbd0a862864223);
+            
+    
+            var marker_077f7023a50db2c313a2cc234e6e1dee = L.marker(
+                [-7.067111, 110.370222],
+                {
+}
+            ).addTo(map_ab8edbc02a4f767329c5443ccffb9a45);
+        
+    
+            var div_icon_07e272141acf029b9e2fda650b6ef200 = L.divIcon({
+  "html": "\n            \u003cdiv style=\"\n                font-family: Arial, sans-serif;\n                font-size: 8pt; \n                font-weight: bold;\n                color: #000000;\n                background-color: rgba(255, 255, 255, 0.85);\n                border: 1px solid black;\n                border-radius: 3px;\n                padding: 2px 4px;\n                white-space: nowrap;\n                transform: translate(12px, -12px);\n            \"\u003e\n                D\u0027pong Semarang\n            \u003c/div\u003e\n            ",
+  "className": "empty",
+});
+        
+    
+                marker_077f7023a50db2c313a2cc234e6e1dee.setIcon(div_icon_07e272141acf029b9e2fda650b6ef200);
+            
+    
+            var marker_897bd46127f7ca5cdbddc9230e3e8839 = L.marker(
+                [-7.037444, 110.395333],
+                {
+}
+            ).addTo(map_ab8edbc02a4f767329c5443ccffb9a45);
+        
+    
+            var icon_86b0203da1125a59a6d9e0ef9d900619 = L.AwesomeMarkers.icon(
+                {
+  "markerColor": "blue",
+  "iconColor": "white",
+  "icon": "info-sign",
+  "prefix": "glyphicon",
+  "extraClasses": "fa-rotate-0",
+}
+            );
+        
+    
+        var popup_e06bef48fe8cb9228c52f8dbd27e1209 = L.popup({
+  "maxWidth": "100%",
+});
+
+        
+            
+                var html_9ae9a9a12bb280fc51e5a4980196939f = $(`<div id="html_9ae9a9a12bb280fc51e5a4980196939f" style="width: 100.0%; height: 100.0%;"><b>Hutan Wisata Tinjomoyo</b></div>`)[0];
+                popup_e06bef48fe8cb9228c52f8dbd27e1209.setContent(html_9ae9a9a12bb280fc51e5a4980196939f);
+            
+        
+
+        marker_897bd46127f7ca5cdbddc9230e3e8839.bindPopup(popup_e06bef48fe8cb9228c52f8dbd27e1209)
+        ;
+
+        
+    
+    
+            marker_897bd46127f7ca5cdbddc9230e3e8839.bindTooltip(
+                `<div>
+                     Vertex: Hutan Wisata Tinjomoyo
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+                marker_897bd46127f7ca5cdbddc9230e3e8839.setIcon(icon_86b0203da1125a59a6d9e0ef9d900619);
+            
+    
+            var marker_e86471a98a1694950deaeba2c8db3f2e = L.marker(
+                [-7.037444, 110.395333],
+                {
+}
+            ).addTo(map_ab8edbc02a4f767329c5443ccffb9a45);
+        
+    
+            var div_icon_ea74bb81d5b793486de7f9b5322f16dd = L.divIcon({
+  "html": "\n            \u003cdiv style=\"\n                font-family: Arial, sans-serif;\n                font-size: 8pt; \n                font-weight: bold;\n                color: #000000;\n                background-color: rgba(255, 255, 255, 0.85);\n                border: 1px solid black;\n                border-radius: 3px;\n                padding: 2px 4px;\n                white-space: nowrap;\n                transform: translate(12px, -12px);\n            \"\u003e\n                Hutan Wisata Tinjomoyo\n            \u003c/div\u003e\n            ",
+  "className": "empty",
+});
+        
+    
+                marker_e86471a98a1694950deaeba2c8db3f2e.setIcon(div_icon_ea74bb81d5b793486de7f9b5322f16dd);
+            
+    
+            var marker_d89427049e5e17fac48323a553eed8db = L.marker(
+                [-6.993555, 110.383444],
+                {
+}
+            ).addTo(map_ab8edbc02a4f767329c5443ccffb9a45);
+        
+    
+            var icon_0f259c75945a8de7a1db4b52b604a013 = L.AwesomeMarkers.icon(
+                {
+  "markerColor": "blue",
+  "iconColor": "white",
+  "icon": "info-sign",
+  "prefix": "glyphicon",
+  "extraClasses": "fa-rotate-0",
+}
+            );
+        
+    
+        var popup_8146b1978fb36138cb7ae26b646e2186 = L.popup({
+  "maxWidth": "100%",
+});
+
+        
+            
+                var html_5abc426694cb1b12760b56e09029ecaa = $(`<div id="html_5abc426694cb1b12760b56e09029ecaa" style="width: 100.0%; height: 100.0%;"><b>Jungle Toon Waterpark</b></div>`)[0];
+                popup_8146b1978fb36138cb7ae26b646e2186.setContent(html_5abc426694cb1b12760b56e09029ecaa);
+            
+        
+
+        marker_d89427049e5e17fac48323a553eed8db.bindPopup(popup_8146b1978fb36138cb7ae26b646e2186)
+        ;
+
+        
+    
+    
+            marker_d89427049e5e17fac48323a553eed8db.bindTooltip(
+                `<div>
+                     Vertex: Jungle Toon Waterpark
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+                marker_d89427049e5e17fac48323a553eed8db.setIcon(icon_0f259c75945a8de7a1db4b52b604a013);
+            
+    
+            var marker_1fa40a6e3cbf183edd5df6b2cf4e3ab4 = L.marker(
+                [-6.993555, 110.383444],
+                {
+}
+            ).addTo(map_ab8edbc02a4f767329c5443ccffb9a45);
+        
+    
+            var div_icon_7f6fd1c7d3947904245306e933550f26 = L.divIcon({
+  "html": "\n            \u003cdiv style=\"\n                font-family: Arial, sans-serif;\n                font-size: 8pt; \n                font-weight: bold;\n                color: #000000;\n                background-color: rgba(255, 255, 255, 0.85);\n                border: 1px solid black;\n                border-radius: 3px;\n                padding: 2px 4px;\n                white-space: nowrap;\n                transform: translate(12px, -12px);\n            \"\u003e\n                Jungle Toon Waterpark\n            \u003c/div\u003e\n            ",
+  "className": "empty",
+});
+        
+    
+                marker_1fa40a6e3cbf183edd5df6b2cf4e3ab4.setIcon(div_icon_7f6fd1c7d3947904245306e933550f26);
+            
+    
+            var marker_0d5ebe03e101fb7d55d09e19f9eddf83 = L.marker(
+                [-6.985666, 110.350555],
+                {
+}
+            ).addTo(map_ab8edbc02a4f767329c5443ccffb9a45);
+        
+    
+            var icon_93781f5a840e52d936e3762d1932ad16 = L.AwesomeMarkers.icon(
+                {
+  "markerColor": "blue",
+  "iconColor": "white",
+  "icon": "info-sign",
+  "prefix": "glyphicon",
+  "extraClasses": "fa-rotate-0",
+}
+            );
+        
+    
+        var popup_0dc8d6c49c7e5181da3a43c67dd0fa5e = L.popup({
+  "maxWidth": "100%",
+});
+
+        
+            
+                var html_b8481e987c3d2373c459ef906ddfbad8 = $(`<div id="html_b8481e987c3d2373c459ef906ddfbad8" style="width: 100.0%; height: 100.0%;"><b>Kampoeng Wisata Taman Lele</b></div>`)[0];
+                popup_0dc8d6c49c7e5181da3a43c67dd0fa5e.setContent(html_b8481e987c3d2373c459ef906ddfbad8);
+            
+        
+
+        marker_0d5ebe03e101fb7d55d09e19f9eddf83.bindPopup(popup_0dc8d6c49c7e5181da3a43c67dd0fa5e)
+        ;
+
+        
+    
+    
+            marker_0d5ebe03e101fb7d55d09e19f9eddf83.bindTooltip(
+                `<div>
+                     Vertex: Kampoeng Wisata Taman Lele
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+                marker_0d5ebe03e101fb7d55d09e19f9eddf83.setIcon(icon_93781f5a840e52d936e3762d1932ad16);
+            
+    
+            var marker_ec7ac588fd766d828a439c45e3495f08 = L.marker(
+                [-6.985666, 110.350555],
+                {
+}
+            ).addTo(map_ab8edbc02a4f767329c5443ccffb9a45);
+        
+    
+            var div_icon_473e624a4ba2652c6941cc7ac76f2f6c = L.divIcon({
+  "html": "\n            \u003cdiv style=\"\n                font-family: Arial, sans-serif;\n                font-size: 8pt; \n                font-weight: bold;\n                color: #000000;\n                background-color: rgba(255, 255, 255, 0.85);\n                border: 1px solid black;\n                border-radius: 3px;\n                padding: 2px 4px;\n                white-space: nowrap;\n                transform: translate(12px, -12px);\n            \"\u003e\n                Kampoeng Wisata Taman Lele\n            \u003c/div\u003e\n            ",
+  "className": "empty",
+});
+        
+    
+                marker_ec7ac588fd766d828a439c45e3495f08.setIcon(div_icon_473e624a4ba2652c6941cc7ac76f2f6c);
+            
+    
+            var marker_b012dfc4a6e89ba2d646221a0ae658dd = L.marker(
+                [-7.027777, 110.390666],
+                {
+}
+            ).addTo(map_ab8edbc02a4f767329c5443ccffb9a45);
+        
+    
+            var icon_2570f15819eb31b539b9bf653de26214 = L.AwesomeMarkers.icon(
+                {
+  "markerColor": "blue",
+  "iconColor": "white",
+  "icon": "info-sign",
+  "prefix": "glyphicon",
+  "extraClasses": "fa-rotate-0",
+}
+            );
+        
+    
+        var popup_35ad77bfb5182250fb2c83ffb87b0f0b = L.popup({
+  "maxWidth": "100%",
+});
+
+        
+            
+                var html_7a9c4f2d63e02307027dde07093bb7b4 = $(`<div id="html_7a9c4f2d63e02307027dde07093bb7b4" style="width: 100.0%; height: 100.0%;"><b>Kampung Jawi</b></div>`)[0];
+                popup_35ad77bfb5182250fb2c83ffb87b0f0b.setContent(html_7a9c4f2d63e02307027dde07093bb7b4);
+            
+        
+
+        marker_b012dfc4a6e89ba2d646221a0ae658dd.bindPopup(popup_35ad77bfb5182250fb2c83ffb87b0f0b)
+        ;
+
+        
+    
+    
+            marker_b012dfc4a6e89ba2d646221a0ae658dd.bindTooltip(
+                `<div>
+                     Vertex: Kampung Jawi
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+                marker_b012dfc4a6e89ba2d646221a0ae658dd.setIcon(icon_2570f15819eb31b539b9bf653de26214);
+            
+    
+            var marker_8025ce0febe7e6b7ae86a242f4431fa8 = L.marker(
+                [-7.027777, 110.390666],
+                {
+}
+            ).addTo(map_ab8edbc02a4f767329c5443ccffb9a45);
+        
+    
+            var div_icon_22b3ba2d37cbaf683d31446e9f83ecb1 = L.divIcon({
+  "html": "\n            \u003cdiv style=\"\n                font-family: Arial, sans-serif;\n                font-size: 8pt; \n                font-weight: bold;\n                color: #000000;\n                background-color: rgba(255, 255, 255, 0.85);\n                border: 1px solid black;\n                border-radius: 3px;\n                padding: 2px 4px;\n                white-space: nowrap;\n                transform: translate(12px, -12px);\n            \"\u003e\n                Kampung Jawi\n            \u003c/div\u003e\n            ",
+  "className": "empty",
+});
+        
+    
+                marker_8025ce0febe7e6b7ae86a242f4431fa8.setIcon(div_icon_22b3ba2d37cbaf683d31446e9f83ecb1);
+            
+    
+            var marker_15d1eaabfb97020dba8fd524bfd2c32b = L.marker(
+                [-6.992888, 110.414777],
+                {
+}
+            ).addTo(map_ab8edbc02a4f767329c5443ccffb9a45);
+        
+    
+            var icon_3a1149df5e7c45c015ad177e2e3a38cb = L.AwesomeMarkers.icon(
+                {
+  "markerColor": "blue",
+  "iconColor": "white",
+  "icon": "info-sign",
+  "prefix": "glyphicon",
+  "extraClasses": "fa-rotate-0",
+}
+            );
+        
+    
+        var popup_0f1fb1a5ae5a8b15dffd32a4cc5620b8 = L.popup({
+  "maxWidth": "100%",
+});
+
+        
+            
+                var html_02c6a4ace584d4ddbb20d783cfc525b6 = $(`<div id="html_02c6a4ace584d4ddbb20d783cfc525b6" style="width: 100.0%; height: 100.0%;"><b>Makam Ki Ageng Pandanaran</b></div>`)[0];
+                popup_0f1fb1a5ae5a8b15dffd32a4cc5620b8.setContent(html_02c6a4ace584d4ddbb20d783cfc525b6);
+            
+        
+
+        marker_15d1eaabfb97020dba8fd524bfd2c32b.bindPopup(popup_0f1fb1a5ae5a8b15dffd32a4cc5620b8)
+        ;
+
+        
+    
+    
+            marker_15d1eaabfb97020dba8fd524bfd2c32b.bindTooltip(
+                `<div>
+                     Vertex: Makam Ki Ageng Pandanaran
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+                marker_15d1eaabfb97020dba8fd524bfd2c32b.setIcon(icon_3a1149df5e7c45c015ad177e2e3a38cb);
+            
+    
+            var marker_eae98b910be7162949c1564fdebc6ac8 = L.marker(
+                [-6.992888, 110.414777],
+                {
+}
+            ).addTo(map_ab8edbc02a4f767329c5443ccffb9a45);
+        
+    
+            var div_icon_2a51b0039509b719fa160797fec4847f = L.divIcon({
+  "html": "\n            \u003cdiv style=\"\n                font-family: Arial, sans-serif;\n                font-size: 8pt; \n                font-weight: bold;\n                color: #000000;\n                background-color: rgba(255, 255, 255, 0.85);\n                border: 1px solid black;\n                border-radius: 3px;\n                padding: 2px 4px;\n                white-space: nowrap;\n                transform: translate(12px, -12px);\n            \"\u003e\n                Makam Ki Ageng Pandanaran\n            \u003c/div\u003e\n            ",
+  "className": "empty",
+});
+        
+    
+                marker_eae98b910be7162949c1564fdebc6ac8.setIcon(div_icon_2a51b0039509b719fa160797fec4847f);
+            
+    
+            var marker_71f0b70111b73c761c3e0dfe3fe98257 = L.marker(
+                [-6.983999, 110.446888],
+                {
+}
+            ).addTo(map_ab8edbc02a4f767329c5443ccffb9a45);
+        
+    
+            var icon_7514aa21848200e60588b865322eaa41 = L.AwesomeMarkers.icon(
+                {
+  "markerColor": "blue",
+  "iconColor": "white",
+  "icon": "info-sign",
+  "prefix": "glyphicon",
+  "extraClasses": "fa-rotate-0",
+}
+            );
+        
+    
+        var popup_271945b823dec0624e6f139ed795f79b = L.popup({
+  "maxWidth": "100%",
+});
+
+        
+            
+                var html_09463adde9b16e3272110a654b44a4ac = $(`<div id="html_09463adde9b16e3272110a654b44a4ac" style="width: 100.0%; height: 100.0%;"><b>Masjid Agung Jawa Tengah</b></div>`)[0];
+                popup_271945b823dec0624e6f139ed795f79b.setContent(html_09463adde9b16e3272110a654b44a4ac);
+            
+        
+
+        marker_71f0b70111b73c761c3e0dfe3fe98257.bindPopup(popup_271945b823dec0624e6f139ed795f79b)
+        ;
+
+        
+    
+    
+            marker_71f0b70111b73c761c3e0dfe3fe98257.bindTooltip(
+                `<div>
+                     Vertex: Masjid Agung Jawa Tengah
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+                marker_71f0b70111b73c761c3e0dfe3fe98257.setIcon(icon_7514aa21848200e60588b865322eaa41);
+            
+    
+            var marker_a539ccfacd71e45e8cf2476a64c7244b = L.marker(
+                [-6.983999, 110.446888],
+                {
+}
+            ).addTo(map_ab8edbc02a4f767329c5443ccffb9a45);
+        
+    
+            var div_icon_0e85a83198c885d3df79ebf9bee6bee5 = L.divIcon({
+  "html": "\n            \u003cdiv style=\"\n                font-family: Arial, sans-serif;\n                font-size: 8pt; \n                font-weight: bold;\n                color: #000000;\n                background-color: rgba(255, 255, 255, 0.85);\n                border: 1px solid black;\n                border-radius: 3px;\n                padding: 2px 4px;\n                white-space: nowrap;\n                transform: translate(12px, -12px);\n            \"\u003e\n                Masjid Agung Jawa Tengah\n            \u003c/div\u003e\n            ",
+  "className": "empty",
+});
+        
+    
+                marker_a539ccfacd71e45e8cf2476a64c7244b.setIcon(div_icon_0e85a83198c885d3df79ebf9bee6bee5);
+            
+    
+            var marker_6b70e25fd53fbb69691dca72372fed78 = L.marker(
+                [-6.983111, 110.408222],
+                {
+}
+            ).addTo(map_ab8edbc02a4f767329c5443ccffb9a45);
+        
+    
+            var icon_33d179e655fd95d37010923ce98ae3a3 = L.AwesomeMarkers.icon(
+                {
+  "markerColor": "blue",
+  "iconColor": "white",
+  "icon": "info-sign",
+  "prefix": "glyphicon",
+  "extraClasses": "fa-rotate-0",
+}
+            );
+        
+    
+        var popup_2827c3e6e37b906065bc6bb7c407fcc6 = L.popup({
+  "maxWidth": "100%",
+});
+
+        
+            
+                var html_b615b6806465b0f25905c1024a37e670 = $(`<div id="html_b615b6806465b0f25905c1024a37e670" style="width: 100.0%; height: 100.0%;"><b>Museum Perjuangan Mandala Bhakti</b></div>`)[0];
+                popup_2827c3e6e37b906065bc6bb7c407fcc6.setContent(html_b615b6806465b0f25905c1024a37e670);
+            
+        
+
+        marker_6b70e25fd53fbb69691dca72372fed78.bindPopup(popup_2827c3e6e37b906065bc6bb7c407fcc6)
+        ;
+
+        
+    
+    
+            marker_6b70e25fd53fbb69691dca72372fed78.bindTooltip(
+                `<div>
+                     Vertex: Museum Perjuangan Mandala Bhakti
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+                marker_6b70e25fd53fbb69691dca72372fed78.setIcon(icon_33d179e655fd95d37010923ce98ae3a3);
+            
+    
+            var marker_cf20db9e21b6affa32f55c317faeaefa = L.marker(
+                [-6.983111, 110.408222],
+                {
+}
+            ).addTo(map_ab8edbc02a4f767329c5443ccffb9a45);
+        
+    
+            var div_icon_8ae0372d3e2e2be23063064f568f3584 = L.divIcon({
+  "html": "\n            \u003cdiv style=\"\n                font-family: Arial, sans-serif;\n                font-size: 8pt; \n                font-weight: bold;\n                color: #000000;\n                background-color: rgba(255, 255, 255, 0.85);\n                border: 1px solid black;\n                border-radius: 3px;\n                padding: 2px 4px;\n                white-space: nowrap;\n                transform: translate(12px, -12px);\n            \"\u003e\n                Museum Perjuangan Mandala Bhakti\n            \u003c/div\u003e\n            ",
+  "className": "empty",
+});
+        
+    
+                marker_cf20db9e21b6affa32f55c317faeaefa.setIcon(div_icon_8ae0372d3e2e2be23063064f568f3584);
+            
+    
+            var marker_9e94fd7ec5ae95bd9c3d9ec5725ba28a = L.marker(
+                [-7.013222, 110.407333],
+                {
+}
+            ).addTo(map_ab8edbc02a4f767329c5443ccffb9a45);
+        
+    
+            var icon_cd483ec252ca74da125584759ebaadac = L.AwesomeMarkers.icon(
+                {
+  "markerColor": "blue",
+  "iconColor": "white",
+  "icon": "info-sign",
+  "prefix": "glyphicon",
+  "extraClasses": "fa-rotate-0",
+}
+            );
+        
+    
+        var popup_9b4a03082b4f83b39b3d3278f26ecc21 = L.popup({
+  "maxWidth": "100%",
+});
+
+        
+            
+                var html_20d7806fa010c6fd1556629417ee2cfd = $(`<div id="html_20d7806fa010c6fd1556629417ee2cfd" style="width: 100.0%; height: 100.0%;"><b>Museum Rekor Dunia Indonesia</b></div>`)[0];
+                popup_9b4a03082b4f83b39b3d3278f26ecc21.setContent(html_20d7806fa010c6fd1556629417ee2cfd);
+            
+        
+
+        marker_9e94fd7ec5ae95bd9c3d9ec5725ba28a.bindPopup(popup_9b4a03082b4f83b39b3d3278f26ecc21)
+        ;
+
+        
+    
+    
+            marker_9e94fd7ec5ae95bd9c3d9ec5725ba28a.bindTooltip(
+                `<div>
+                     Vertex: Museum Rekor Dunia Indonesia
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+                marker_9e94fd7ec5ae95bd9c3d9ec5725ba28a.setIcon(icon_cd483ec252ca74da125584759ebaadac);
+            
+    
+            var marker_9b77badb9d6bd379e2f4b14a614ec56f = L.marker(
+                [-7.013222, 110.407333],
+                {
+}
+            ).addTo(map_ab8edbc02a4f767329c5443ccffb9a45);
+        
+    
+            var div_icon_fa62505ea1cb919bdfcda9059d48c47a = L.divIcon({
+  "html": "\n            \u003cdiv style=\"\n                font-family: Arial, sans-serif;\n                font-size: 8pt; \n                font-weight: bold;\n                color: #000000;\n                background-color: rgba(255, 255, 255, 0.85);\n                border: 1px solid black;\n                border-radius: 3px;\n                padding: 2px 4px;\n                white-space: nowrap;\n                transform: translate(12px, -12px);\n            \"\u003e\n                Museum Rekor Dunia Indonesia\n            \u003c/div\u003e\n            ",
+  "className": "empty",
+});
+        
+    
+                marker_9b77badb9d6bd379e2f4b14a614ec56f.setIcon(div_icon_fa62505ea1cb919bdfcda9059d48c47a);
+            
+    
+            var marker_77392e959f2b8ffd73d6735d99eac3ac = L.marker(
+                [-6.985333, 110.388444],
+                {
+}
+            ).addTo(map_ab8edbc02a4f767329c5443ccffb9a45);
+        
+    
+            var icon_97406f4dc19c10ca99d7323759eaa48c = L.AwesomeMarkers.icon(
+                {
+  "markerColor": "blue",
+  "iconColor": "white",
+  "icon": "info-sign",
+  "prefix": "glyphicon",
+  "extraClasses": "fa-rotate-0",
+}
+            );
+        
+    
+        var popup_091d3f4fbcae28128f75afae6eda2426 = L.popup({
+  "maxWidth": "100%",
+});
+
+        
+            
+                var html_0274582fed6cc310c540f73980b67aea = $(`<div id="html_0274582fed6cc310c540f73980b67aea" style="width: 100.0%; height: 100.0%;"><b>Museum Ranggawarsita</b></div>`)[0];
+                popup_091d3f4fbcae28128f75afae6eda2426.setContent(html_0274582fed6cc310c540f73980b67aea);
+            
+        
+
+        marker_77392e959f2b8ffd73d6735d99eac3ac.bindPopup(popup_091d3f4fbcae28128f75afae6eda2426)
+        ;
+
+        
+    
+    
+            marker_77392e959f2b8ffd73d6735d99eac3ac.bindTooltip(
+                `<div>
+                     Vertex: Museum Ranggawarsita
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+                marker_77392e959f2b8ffd73d6735d99eac3ac.setIcon(icon_97406f4dc19c10ca99d7323759eaa48c);
+            
+    
+            var marker_0bbe979828f499fc164c2f7474346c5e = L.marker(
+                [-6.985333, 110.388444],
+                {
+}
+            ).addTo(map_ab8edbc02a4f767329c5443ccffb9a45);
+        
+    
+            var div_icon_dfb6185f47d076829999786694636952 = L.divIcon({
+  "html": "\n            \u003cdiv style=\"\n                font-family: Arial, sans-serif;\n                font-size: 8pt; \n                font-weight: bold;\n                color: #000000;\n                background-color: rgba(255, 255, 255, 0.85);\n                border: 1px solid black;\n                border-radius: 3px;\n                padding: 2px 4px;\n                white-space: nowrap;\n                transform: translate(12px, -12px);\n            \"\u003e\n                Museum Ranggawarsita\n            \u003c/div\u003e\n            ",
+  "className": "empty",
+});
+        
+    
+                marker_0bbe979828f499fc164c2f7474346c5e.setIcon(div_icon_dfb6185f47d076829999786694636952);
+            
+    
+            var marker_91f10bf4d6c6affde0e5828c4e487b2a = L.marker(
+                [-6.968444, 110.427555],
+                {
+}
+            ).addTo(map_ab8edbc02a4f767329c5443ccffb9a45);
+        
+    
+            var icon_27e8343b75038a4c8976662d88988ecb = L.AwesomeMarkers.icon(
+                {
+  "markerColor": "blue",
+  "iconColor": "white",
+  "icon": "info-sign",
+  "prefix": "glyphicon",
+  "extraClasses": "fa-rotate-0",
+}
+            );
+        
+    
+        var popup_39c01abb414af7010b3cbcc68532548b = L.popup({
+  "maxWidth": "100%",
+});
+
+        
+            
+                var html_8a615b7a911488752625f3e2ddfac027 = $(`<div id="html_8a615b7a911488752625f3e2ddfac027" style="width: 100.0%; height: 100.0%;"><b>Old City 3D Trick Art</b></div>`)[0];
+                popup_39c01abb414af7010b3cbcc68532548b.setContent(html_8a615b7a911488752625f3e2ddfac027);
+            
+        
+
+        marker_91f10bf4d6c6affde0e5828c4e487b2a.bindPopup(popup_39c01abb414af7010b3cbcc68532548b)
+        ;
+
+        
+    
+    
+            marker_91f10bf4d6c6affde0e5828c4e487b2a.bindTooltip(
+                `<div>
+                     Vertex: Old City 3D Trick Art
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+                marker_91f10bf4d6c6affde0e5828c4e487b2a.setIcon(icon_27e8343b75038a4c8976662d88988ecb);
+            
+    
+            var marker_66524bcad73b8bcafc1f16a697a557af = L.marker(
+                [-6.968444, 110.427555],
+                {
+}
+            ).addTo(map_ab8edbc02a4f767329c5443ccffb9a45);
+        
+    
+            var div_icon_f358b67fbc4bb182ac4d37baecb5890a = L.divIcon({
+  "html": "\n            \u003cdiv style=\"\n                font-family: Arial, sans-serif;\n                font-size: 8pt; \n                font-weight: bold;\n                color: #000000;\n                background-color: rgba(255, 255, 255, 0.85);\n                border: 1px solid black;\n                border-radius: 3px;\n                padding: 2px 4px;\n                white-space: nowrap;\n                transform: translate(12px, -12px);\n            \"\u003e\n                Old City 3D Trick Art\n            \u003c/div\u003e\n            ",
+  "className": "empty",
+});
+        
+    
+                marker_66524bcad73b8bcafc1f16a697a557af.setIcon(div_icon_f358b67fbc4bb182ac4d37baecb5890a);
+            
+    
+            var marker_fd850d64f98e108460070713d7861bdc = L.marker(
+                [-7.005555, 110.420666],
+                {
+}
+            ).addTo(map_ab8edbc02a4f767329c5443ccffb9a45);
+        
+    
+            var icon_26e0fb51b6521930ca2c3e16e3ed3fdd = L.AwesomeMarkers.icon(
+                {
+  "markerColor": "blue",
+  "iconColor": "white",
+  "icon": "info-sign",
+  "prefix": "glyphicon",
+  "extraClasses": "fa-rotate-0",
+}
+            );
+        
+    
+        var popup_8784ea35521142ac7613f40c42cc6ca3 = L.popup({
+  "maxWidth": "100%",
+});
+
+        
+            
+                var html_48af971a009d2af721cbb84e0412ed6e = $(`<div id="html_48af971a009d2af721cbb84e0412ed6e" style="width: 100.0%; height: 100.0%;"><b>Pura Agung Giri Natha</b></div>`)[0];
+                popup_8784ea35521142ac7613f40c42cc6ca3.setContent(html_48af971a009d2af721cbb84e0412ed6e);
+            
+        
+
+        marker_fd850d64f98e108460070713d7861bdc.bindPopup(popup_8784ea35521142ac7613f40c42cc6ca3)
+        ;
+
+        
+    
+    
+            marker_fd850d64f98e108460070713d7861bdc.bindTooltip(
+                `<div>
+                     Vertex: Pura Agung Giri Natha
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+                marker_fd850d64f98e108460070713d7861bdc.setIcon(icon_26e0fb51b6521930ca2c3e16e3ed3fdd);
+            
+    
+            var marker_ffba4ca8672574e9851e53033233353a = L.marker(
+                [-7.005555, 110.420666],
+                {
+}
+            ).addTo(map_ab8edbc02a4f767329c5443ccffb9a45);
+        
+    
+            var div_icon_666c1c6c9d24ce563a20b1b91c7e4615 = L.divIcon({
+  "html": "\n            \u003cdiv style=\"\n                font-family: Arial, sans-serif;\n                font-size: 8pt; \n                font-weight: bold;\n                color: #000000;\n                background-color: rgba(255, 255, 255, 0.85);\n                border: 1px solid black;\n                border-radius: 3px;\n                padding: 2px 4px;\n                white-space: nowrap;\n                transform: translate(12px, -12px);\n            \"\u003e\n                Pura Agung Giri Natha\n            \u003c/div\u003e\n            ",
+  "className": "empty",
+});
+        
+    
+                marker_ffba4ca8672574e9851e53033233353a.setIcon(div_icon_666c1c6c9d24ce563a20b1b91c7e4615);
+            
+    
+            var marker_840f17830fc20f0a0e8cb5f29e8acfaf = L.marker(
+                [-7.012666, 110.351777],
+                {
+}
+            ).addTo(map_ab8edbc02a4f767329c5443ccffb9a45);
+        
+    
+            var icon_c03f6c61fd5a4e7fe390f77bdbddacda = L.AwesomeMarkers.icon(
+                {
+  "markerColor": "blue",
+  "iconColor": "white",
+  "icon": "info-sign",
+  "prefix": "glyphicon",
+  "extraClasses": "fa-rotate-0",
+}
+            );
+        
+    
+        var popup_c2ce1f3a87e2fb00664eb9d58761f08a = L.popup({
+  "maxWidth": "100%",
+});
+
+        
+            
+                var html_ec339084dfe819fb4572449a6c22796a = $(`<div id="html_ec339084dfe819fb4572449a6c22796a" style="width: 100.0%; height: 100.0%;"><b>Silayur Park Semarang</b></div>`)[0];
+                popup_c2ce1f3a87e2fb00664eb9d58761f08a.setContent(html_ec339084dfe819fb4572449a6c22796a);
+            
+        
+
+        marker_840f17830fc20f0a0e8cb5f29e8acfaf.bindPopup(popup_c2ce1f3a87e2fb00664eb9d58761f08a)
+        ;
+
+        
+    
+    
+            marker_840f17830fc20f0a0e8cb5f29e8acfaf.bindTooltip(
+                `<div>
+                     Vertex: Silayur Park Semarang
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+                marker_840f17830fc20f0a0e8cb5f29e8acfaf.setIcon(icon_c03f6c61fd5a4e7fe390f77bdbddacda);
+            
+    
+            var marker_13b8c3d61f9d9494b522e52c03d6e238 = L.marker(
+                [-7.012666, 110.351777],
+                {
+}
+            ).addTo(map_ab8edbc02a4f767329c5443ccffb9a45);
+        
+    
+            var div_icon_7d4d95f7feb523c0a8e42ffe19441268 = L.divIcon({
+  "html": "\n            \u003cdiv style=\"\n                font-family: Arial, sans-serif;\n                font-size: 8pt; \n                font-weight: bold;\n                color: #000000;\n                background-color: rgba(255, 255, 255, 0.85);\n                border: 1px solid black;\n                border-radius: 3px;\n                padding: 2px 4px;\n                white-space: nowrap;\n                transform: translate(12px, -12px);\n            \"\u003e\n                Silayur Park Semarang\n            \u003c/div\u003e\n            ",
+  "className": "empty",
+});
+        
+    
+                marker_13b8c3d61f9d9494b522e52c03d6e238.setIcon(div_icon_7d4d95f7feb523c0a8e42ffe19441268);
+            
+    
+            var marker_c49eafa48d8629064f83312cec00ec65 = L.marker(
+                [-6.995777, 110.417888],
+                {
+}
+            ).addTo(map_ab8edbc02a4f767329c5443ccffb9a45);
+        
+    
+            var icon_225bd3048241abe097156369ffd4a57f = L.AwesomeMarkers.icon(
+                {
+  "markerColor": "blue",
+  "iconColor": "white",
+  "icon": "info-sign",
+  "prefix": "glyphicon",
+  "extraClasses": "fa-rotate-0",
+}
+            );
+        
+    
+        var popup_348545cc6c2a099ae90a283b6b8aa986 = L.popup({
+  "maxWidth": "100%",
+});
+
+        
+            
+                var html_7542aaacef598d26bfe4196fda1d97e9 = $(`<div id="html_7542aaacef598d26bfe4196fda1d97e9" style="width: 100.0%; height: 100.0%;"><b>Taman Budaya Raden Saleh</b></div>`)[0];
+                popup_348545cc6c2a099ae90a283b6b8aa986.setContent(html_7542aaacef598d26bfe4196fda1d97e9);
+            
+        
+
+        marker_c49eafa48d8629064f83312cec00ec65.bindPopup(popup_348545cc6c2a099ae90a283b6b8aa986)
+        ;
+
+        
+    
+    
+            marker_c49eafa48d8629064f83312cec00ec65.bindTooltip(
+                `<div>
+                     Vertex: Taman Budaya Raden Saleh
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+                marker_c49eafa48d8629064f83312cec00ec65.setIcon(icon_225bd3048241abe097156369ffd4a57f);
+            
+    
+            var marker_f76d19a3ff087dbec3ed07380b3e2dba = L.marker(
+                [-6.995777, 110.417888],
+                {
+}
+            ).addTo(map_ab8edbc02a4f767329c5443ccffb9a45);
+        
+    
+            var div_icon_c249ea055c150430a6fc295e7ad5fdbe = L.divIcon({
+  "html": "\n            \u003cdiv style=\"\n                font-family: Arial, sans-serif;\n                font-size: 8pt; \n                font-weight: bold;\n                color: #000000;\n                background-color: rgba(255, 255, 255, 0.85);\n                border: 1px solid black;\n                border-radius: 3px;\n                padding: 2px 4px;\n                white-space: nowrap;\n                transform: translate(12px, -12px);\n            \"\u003e\n                Taman Budaya Raden Saleh\n            \u003c/div\u003e\n            ",
+  "className": "empty",
+});
+        
+    
+                marker_f76d19a3ff087dbec3ed07380b3e2dba.setIcon(div_icon_c249ea055c150430a6fc295e7ad5fdbe);
+            
+    
+            var marker_c9a7660aa83b12cac41b948d27fce56b = L.marker(
+                [-6.965888, 110.308999],
+                {
+}
+            ).addTo(map_ab8edbc02a4f767329c5443ccffb9a45);
+        
+    
+            var icon_ce0e2c087f8f71ca18f4e648a744c8d5 = L.AwesomeMarkers.icon(
+                {
+  "markerColor": "blue",
+  "iconColor": "white",
+  "icon": "info-sign",
+  "prefix": "glyphicon",
+  "extraClasses": "fa-rotate-0",
+}
+            );
+        
+    
+        var popup_9e1c9dad092d1ebe4bacbf2a4b04e4cd = L.popup({
+  "maxWidth": "100%",
+});
+
+        
+            
+                var html_bc480912830ee78ff44d2b1af7d10902 = $(`<div id="html_bc480912830ee78ff44d2b1af7d10902" style="width: 100.0%; height: 100.0%;"><b>Semarang Zoo</b></div>`)[0];
+                popup_9e1c9dad092d1ebe4bacbf2a4b04e4cd.setContent(html_bc480912830ee78ff44d2b1af7d10902);
+            
+        
+
+        marker_c9a7660aa83b12cac41b948d27fce56b.bindPopup(popup_9e1c9dad092d1ebe4bacbf2a4b04e4cd)
+        ;
+
+        
+    
+    
+            marker_c9a7660aa83b12cac41b948d27fce56b.bindTooltip(
+                `<div>
+                     Vertex: Semarang Zoo
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+                marker_c9a7660aa83b12cac41b948d27fce56b.setIcon(icon_ce0e2c087f8f71ca18f4e648a744c8d5);
+            
+    
+            var marker_f48fb705b60dab4c2a514ce9e16aca64 = L.marker(
+                [-6.965888, 110.308999],
+                {
+}
+            ).addTo(map_ab8edbc02a4f767329c5443ccffb9a45);
+        
+    
+            var div_icon_f41b49852eea25ab104be445efd8dd7e = L.divIcon({
+  "html": "\n            \u003cdiv style=\"\n                font-family: Arial, sans-serif;\n                font-size: 8pt; \n                font-weight: bold;\n                color: #000000;\n                background-color: rgba(255, 255, 255, 0.85);\n                border: 1px solid black;\n                border-radius: 3px;\n                padding: 2px 4px;\n                white-space: nowrap;\n                transform: translate(12px, -12px);\n            \"\u003e\n                Semarang Zoo\n            \u003c/div\u003e\n            ",
+  "className": "empty",
+});
+        
+    
+                marker_f48fb705b60dab4c2a514ce9e16aca64.setIcon(div_icon_f41b49852eea25ab104be445efd8dd7e);
+            
+    
+            var marker_31e17dce47e973dd7b907d7ebb54c57e = L.marker(
+                [-6.961999, 110.391111],
+                {
+}
+            ).addTo(map_ab8edbc02a4f767329c5443ccffb9a45);
+        
+    
+            var icon_b15285849a36d6002dfce5a239170a38 = L.AwesomeMarkers.icon(
+                {
+  "markerColor": "blue",
+  "iconColor": "white",
+  "icon": "info-sign",
+  "prefix": "glyphicon",
+  "extraClasses": "fa-rotate-0",
+}
+            );
+        
+    
+        var popup_a5896f069fba00c6ccbddc6bb67da19b = L.popup({
+  "maxWidth": "100%",
+});
+
+        
+            
+                var html_0f0eaa6361326a18ae2dda3cf52e159a = $(`<div id="html_0f0eaa6361326a18ae2dda3cf52e159a" style="width: 100.0%; height: 100.0%;"><b>Puri Maerokoco</b></div>`)[0];
+                popup_a5896f069fba00c6ccbddc6bb67da19b.setContent(html_0f0eaa6361326a18ae2dda3cf52e159a);
+            
+        
+
+        marker_31e17dce47e973dd7b907d7ebb54c57e.bindPopup(popup_a5896f069fba00c6ccbddc6bb67da19b)
+        ;
+
+        
+    
+    
+            marker_31e17dce47e973dd7b907d7ebb54c57e.bindTooltip(
+                `<div>
+                     Vertex: Puri Maerokoco
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+                marker_31e17dce47e973dd7b907d7ebb54c57e.setIcon(icon_b15285849a36d6002dfce5a239170a38);
+            
+    
+            var marker_4273fe9d2c16fe4e9102aba5e5e64b8b = L.marker(
+                [-6.961999, 110.391111],
+                {
+}
+            ).addTo(map_ab8edbc02a4f767329c5443ccffb9a45);
+        
+    
+            var div_icon_8c80c5a42aee9887d5bb307413c927c8 = L.divIcon({
+  "html": "\n            \u003cdiv style=\"\n                font-family: Arial, sans-serif;\n                font-size: 8pt; \n                font-weight: bold;\n                color: #000000;\n                background-color: rgba(255, 255, 255, 0.85);\n                border: 1px solid black;\n                border-radius: 3px;\n                padding: 2px 4px;\n                white-space: nowrap;\n                transform: translate(12px, -12px);\n            \"\u003e\n                Puri Maerokoco\n            \u003c/div\u003e\n            ",
+  "className": "empty",
+});
+        
+    
+                marker_4273fe9d2c16fe4e9102aba5e5e64b8b.setIcon(div_icon_8c80c5a42aee9887d5bb307413c927c8);
+            
+    
+            var marker_7a3ef793c1669fe9e511172483dbdfaa = L.marker(
+                [-7.054111, 110.415222],
+                {
+}
+            ).addTo(map_ab8edbc02a4f767329c5443ccffb9a45);
+        
+    
+            var icon_1d7c568aad909b4920695906a5bbfb81 = L.AwesomeMarkers.icon(
+                {
+  "markerColor": "blue",
+  "iconColor": "white",
+  "icon": "info-sign",
+  "prefix": "glyphicon",
+  "extraClasses": "fa-rotate-0",
+}
+            );
+        
+    
+        var popup_fbc3a85a9e32395639b459d2337f26ee = L.popup({
+  "maxWidth": "100%",
+});
+
+        
+            
+                var html_929f76009fb1fcf895db85c7591936d5 = $(`<div id="html_929f76009fb1fcf895db85c7591936d5" style="width: 100.0%; height: 100.0%;"><b>Vihara Buddhagaya</b></div>`)[0];
+                popup_fbc3a85a9e32395639b459d2337f26ee.setContent(html_929f76009fb1fcf895db85c7591936d5);
+            
+        
+
+        marker_7a3ef793c1669fe9e511172483dbdfaa.bindPopup(popup_fbc3a85a9e32395639b459d2337f26ee)
+        ;
+
+        
+    
+    
+            marker_7a3ef793c1669fe9e511172483dbdfaa.bindTooltip(
+                `<div>
+                     Vertex: Vihara Buddhagaya
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+                marker_7a3ef793c1669fe9e511172483dbdfaa.setIcon(icon_1d7c568aad909b4920695906a5bbfb81);
+            
+    
+            var marker_1c305317bdfa0dd8e7009004fe68908a = L.marker(
+                [-7.054111, 110.415222],
+                {
+}
+            ).addTo(map_ab8edbc02a4f767329c5443ccffb9a45);
+        
+    
+            var div_icon_4176a380dd8a9f2c8b6756dbc6dbbf1b = L.divIcon({
+  "html": "\n            \u003cdiv style=\"\n                font-family: Arial, sans-serif;\n                font-size: 8pt; \n                font-weight: bold;\n                color: #000000;\n                background-color: rgba(255, 255, 255, 0.85);\n                border: 1px solid black;\n                border-radius: 3px;\n                padding: 2px 4px;\n                white-space: nowrap;\n                transform: translate(12px, -12px);\n            \"\u003e\n                Vihara Buddhagaya\n            \u003c/div\u003e\n            ",
+  "className": "empty",
+});
+        
+    
+                marker_1c305317bdfa0dd8e7009004fe68908a.setIcon(div_icon_4176a380dd8a9f2c8b6756dbc6dbbf1b);
+            
+    
+            var marker_958cdeeba2620e25f72356104ad7fd24 = L.marker(
+                [-7.045222, 110.465333],
+                {
+}
+            ).addTo(map_ab8edbc02a4f767329c5443ccffb9a45);
+        
+    
+            var icon_20e43587ffda101e58e9773d382b56a4 = L.AwesomeMarkers.icon(
+                {
+  "markerColor": "blue",
+  "iconColor": "white",
+  "icon": "info-sign",
+  "prefix": "glyphicon",
+  "extraClasses": "fa-rotate-0",
+}
+            );
+        
+    
+        var popup_b276140574c393222ddd4781564e6464 = L.popup({
+  "maxWidth": "100%",
+});
+
+        
+            
+                var html_178b8f949401ef0c42c34335f4963039 = $(`<div id="html_178b8f949401ef0c42c34335f4963039" style="width: 100.0%; height: 100.0%;"><b>Dung Tungkul Meteseh</b></div>`)[0];
+                popup_b276140574c393222ddd4781564e6464.setContent(html_178b8f949401ef0c42c34335f4963039);
+            
+        
+
+        marker_958cdeeba2620e25f72356104ad7fd24.bindPopup(popup_b276140574c393222ddd4781564e6464)
+        ;
+
+        
+    
+    
+            marker_958cdeeba2620e25f72356104ad7fd24.bindTooltip(
+                `<div>
+                     Vertex: Dung Tungkul Meteseh
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+                marker_958cdeeba2620e25f72356104ad7fd24.setIcon(icon_20e43587ffda101e58e9773d382b56a4);
+            
+    
+            var marker_bca11692fbf9b30403e2d675c893b789 = L.marker(
+                [-7.045222, 110.465333],
+                {
+}
+            ).addTo(map_ab8edbc02a4f767329c5443ccffb9a45);
+        
+    
+            var div_icon_1cacdb0956e35566fdd42bbb2aa26c88 = L.divIcon({
+  "html": "\n            \u003cdiv style=\"\n                font-family: Arial, sans-serif;\n                font-size: 8pt; \n                font-weight: bold;\n                color: #000000;\n                background-color: rgba(255, 255, 255, 0.85);\n                border: 1px solid black;\n                border-radius: 3px;\n                padding: 2px 4px;\n                white-space: nowrap;\n                transform: translate(12px, -12px);\n            \"\u003e\n                Dung Tungkul Meteseh\n            \u003c/div\u003e\n            ",
+  "className": "empty",
+});
+        
+    
+                marker_bca11692fbf9b30403e2d675c893b789.setIcon(div_icon_1cacdb0956e35566fdd42bbb2aa26c88);
+            
+    
+            var marker_48d909a0ea03c1e99d963824c29fc551 = L.marker(
+                [-7.035333, 110.351444],
+                {
+}
+            ).addTo(map_ab8edbc02a4f767329c5443ccffb9a45);
+        
+    
+            var icon_5f5b5dd472ed8fc6bffe3f11fcaf2a78 = L.AwesomeMarkers.icon(
+                {
+  "markerColor": "blue",
+  "iconColor": "white",
+  "icon": "info-sign",
+  "prefix": "glyphicon",
+  "extraClasses": "fa-rotate-0",
+}
+            );
+        
+    
+        var popup_1160caf0ae2a4e38782bc75b55e57d9f = L.popup({
+  "maxWidth": "100%",
+});
+
+        
+            
+                var html_5b41fe4faac2e4a5994ec81a89d98d2f = $(`<div id="html_5b41fe4faac2e4a5994ec81a89d98d2f" style="width: 100.0%; height: 100.0%;"><b>Waduk Jatibarang</b></div>`)[0];
+                popup_1160caf0ae2a4e38782bc75b55e57d9f.setContent(html_5b41fe4faac2e4a5994ec81a89d98d2f);
+            
+        
+
+        marker_48d909a0ea03c1e99d963824c29fc551.bindPopup(popup_1160caf0ae2a4e38782bc75b55e57d9f)
+        ;
+
+        
+    
+    
+            marker_48d909a0ea03c1e99d963824c29fc551.bindTooltip(
+                `<div>
+                     Vertex: Waduk Jatibarang
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+                marker_48d909a0ea03c1e99d963824c29fc551.setIcon(icon_5f5b5dd472ed8fc6bffe3f11fcaf2a78);
+            
+    
+            var marker_4aeefb3a332697d72f88c46b5da9ec28 = L.marker(
+                [-7.035333, 110.351444],
+                {
+}
+            ).addTo(map_ab8edbc02a4f767329c5443ccffb9a45);
+        
+    
+            var div_icon_29251f92f98f7cd5d44f0c8700650ceb = L.divIcon({
+  "html": "\n            \u003cdiv style=\"\n                font-family: Arial, sans-serif;\n                font-size: 8pt; \n                font-weight: bold;\n                color: #000000;\n                background-color: rgba(255, 255, 255, 0.85);\n                border: 1px solid black;\n                border-radius: 3px;\n                padding: 2px 4px;\n                white-space: nowrap;\n                transform: translate(12px, -12px);\n            \"\u003e\n                Waduk Jatibarang\n            \u003c/div\u003e\n            ",
+  "className": "empty",
+});
+        
+    
+                marker_4aeefb3a332697d72f88c46b5da9ec28.setIcon(div_icon_29251f92f98f7cd5d44f0c8700650ceb);
+            
+    
+            map_ab8edbc02a4f767329c5443ccffb9a45.fitBounds(
+                [[-7.072777, 110.308999], [-6.948512, 110.468666]],
+                {}
+            );
+        
+</script>
 </html>
